@@ -9,18 +9,18 @@ API REST para gerenciamento de usuários, apostas e sorteios do jogo do bicho.
 # Arquitetura
 
 O projeto segue uma arquitetura em camadas:
-┌─────────────────|
+
 │ Controller │ → Camada de apresentação (REST API)               
-├─────────────────|
+
 │ Service │ → Camada de negócio (regras)
-├──────────────────|
+
 │ Repository │ → Camada de acesso a dados (JPA)
-├─────────────────|
+
 │ Model │ → Entidades do banco
-└─────────────────|
-┌─────────────────────|
+
+
 │ Database │ → MySQL
-|─────────────────────|
+
 
 
 
