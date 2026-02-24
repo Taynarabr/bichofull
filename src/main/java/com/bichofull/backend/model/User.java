@@ -2,77 +2,135 @@ package com.bichofull.backend.model;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-import java.util.Objects;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Collections;
 
 @Entity
 @Table(name = "users")
 public class User {
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @Column(nullable = false)
-    private String name;
-
-    @Column(unique = true, nullable = false)
+    private Long id;
+    
+    @Column(nullable = false, length = 100)
+    private String nome;
+    
+    @Column(nullable = false, unique = true, length = 100)
     private String email;
-
-    @Column(nullable = false)
-    private String password;
-
-    @Column(nullable = false)
-    private BigDecimal balance;
-
-    // 1. CONSTRUTOR PADRÃO
+    
+    @Column(nullable = false, length = 255)
+    private String senha;
+    
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal saldo = new BigDecimal("1000.00");
+    
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+    
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+    
+    // ✅ CORRIGIDO: mappedBy aponta para o campo "user" na classe Bet
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Bet> bets = new ArrayList<>();  // ✅ Renomeado para bets (inglês)
+    
+    // Construtor padrão (JPA)
     protected User() {}
-
-    // 2. CONSTRUTOR DE CRIAÇÃO
-    public User(String name, String email, String password) {
-        this.setName(name);
-        this.setEmail(email);
-        this.setPassword(password);
-        this.balance = new BigDecimal("1000.00");
+    
+    // Construtor com parâmetros
+    public User(String nome, String email, String senha) {
+        setNome(nome);
+        setEmail(email);
+        setSenha(senha);
+        this.saldo = new BigDecimal("1000.00");
     }
-
-    // GETTERS
-    public Integer getId() { return id; }
-    public String getName() { return name; }
-    public String getEmail() { return email; }
-    public BigDecimal getBalance() { return balance; }
-
-    // SETTERS COM VALIDAÇÃO 
-    public void setName(String name) {
-        if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Nome é obrigatório.");
+    
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    // ENCAPSULAMENTO - Métodos de negócio
+    public boolean temSaldoSuficiente(BigDecimal valorAposta) {
+        return this.saldo.compareTo(valorAposta) >= 0;
+    }
+    
+    public void debitarSaldo(BigDecimal valor) {
+        if (!temSaldoSuficiente(valor)) {
+            throw new IllegalStateException(
+                String.format("Saldo insuficiente. Disponível: R$ %.2f, Necessário: R$ %.2f", 
+                saldo, valor)
+            );
         }
-        this.name = name;
+        this.saldo = this.saldo.subtract(valor);
     }
-
+    
+    public void creditarSaldo(BigDecimal valor) {
+        if (valor.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Valor para crédito deve ser positivo");
+        }
+        this.saldo = this.saldo.add(valor);
+    }
+    
+    // ✅ CORRIGIDO: método adicionarBet (inglês) para consistência
+    public void adicionarBet(Bet bet) {
+        bets.add(bet);
+        bet.setUser(this);  // ✅ CORRIGIDO: setUser() em vez de setUsuario()
+    }
+    
+    // ✅ CORRIGIDO: método removerBet
+    public void removerBet(Bet bet) {
+        bets.remove(bet);
+        bet.setUser(null);
+    }
+    
+    // Getters e Setters com validação
+    public Long getId() { return id; }
+    
+    public String getNome() { return nome; }
+    
+    public void setNome(String nome) {
+        if (nome == null || nome.trim().length() < 3) {
+            throw new IllegalArgumentException("Nome deve ter pelo menos 3 caracteres");
+        }
+        this.nome = nome.trim();
+    }
+    
+    public String getEmail() { return email; }
+    
     public void setEmail(String email) {
         if (email == null || !email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
-            throw new IllegalArgumentException("E-mail inválido.");
+            throw new IllegalArgumentException("Email inválido");
         }
-        this.email = email;
+        this.email = email.toLowerCase();
     }
-
-    public void setPassword(String password) {
-        // No futuro, aqui chamaremos o codificador de senhas
-        if (password == null || password.length() < 6) {
-            throw new IllegalArgumentException("A senha deve ter no mínimo 6 caracteres.");
+    
+    public String getSenha() { return senha; }
+    
+    public void setSenha(String senha) {
+        if (senha == null || senha.length() < 6) {
+            throw new IllegalArgumentException("Senha deve ter pelo menos 6 caracteres");
         }
-        this.password = password;
+        this.senha = senha;
     }
-
-    // MÉTODOS DE DOMÍNIO
-    public void sacar(BigDecimal valor) {
-        if (valor.compareTo(BigDecimal.ZERO) <= 0) throw new IllegalArgumentException("Valor inválido.");
-        if (this.balance.compareTo(valor) < 0) throw new RuntimeException("Saldo insuficiente.");
-        this.balance = this.balance.subtract(valor);
-    }
-
-    public void depositar(BigDecimal valor) {
-        if (valor.compareTo(BigDecimal.ZERO) <= 0) throw new IllegalArgumentException("Valor inválido.");
-        this.balance = this.balance.add(valor);
+    
+    public BigDecimal getSaldo() { return saldo; }
+    
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    
+    // ✅ CORRIGIDO: retorna List<Bet> e nome do método em inglês
+    public List<Bet> getBets() { 
+        return Collections.unmodifiableList(bets); 
     }
 }
