@@ -104,7 +104,7 @@ public class Bet {
         if (won) {
             this.status = BetStatus.GANHOU;
             this.prize = calculatePrize();
-            this.user.creditarSaldo(this.prize); // ✅ CORRIGIDO: creditarSaldo()
+            this.user.creditarSaldo(this.prize); 
         } else {
             this.status = BetStatus.PERDEU;
             this.prize = BigDecimal.ZERO;
@@ -124,7 +124,7 @@ public class Bet {
     private boolean checkGrupo(Draw draw) {
         if (animal == null) return false;
         String firstPrizeDezena = draw.getDezenaByPosition(1);
-        return animal.contemDezena(firstPrizeDezena); // ✅ CORRIGIDO: contemDezena()
+        return animal.contemDezena(firstPrizeDezena); 
     }
     
     private boolean checkDezena(Draw draw) {
@@ -149,7 +149,7 @@ public class Bet {
             throw new IllegalStateException("Apenas apostas pendentes podem ser canceladas");
         }
         this.status = BetStatus.PERDEU;
-        this.user.creditarSaldo(this.value); // ✅ CORRIGIDO: creditarSaldo()
+        this.user.creditarSaldo(this.value); 
     }
     
     // ========== GETTERS E SETTERS ==========

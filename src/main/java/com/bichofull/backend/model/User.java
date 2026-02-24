@@ -33,9 +33,8 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
-    // ✅ CORRIGIDO: mappedBy aponta para o campo "user" na classe Bet
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Bet> bets = new ArrayList<>();  // ✅ Renomeado para bets (inglês)
+    private List<Bet> bets = new ArrayList<>();  
     
     // Construtor padrão (JPA)
     protected User() {}
@@ -81,13 +80,11 @@ public class User {
         this.saldo = this.saldo.add(valor);
     }
     
-    // ✅ CORRIGIDO: método adicionarBet (inglês) para consistência
     public void adicionarBet(Bet bet) {
         bets.add(bet);
-        bet.setUser(this);  // ✅ CORRIGIDO: setUser() em vez de setUsuario()
+        bet.setUser(this);  
     }
     
-    // ✅ CORRIGIDO: método removerBet
     public void removerBet(Bet bet) {
         bets.remove(bet);
         bet.setUser(null);
@@ -129,7 +126,6 @@ public class User {
     
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     
-    // ✅ CORRIGIDO: retorna List<Bet> e nome do método em inglês
     public List<Bet> getBets() { 
         return Collections.unmodifiableList(bets); 
     }
