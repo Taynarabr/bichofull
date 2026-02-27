@@ -2,37 +2,25 @@ package com.bichofull.backend.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class UserRequestDTO {
-    
-    @NotBlank(message = "Nome é obrigatório")
-    @Size(min = 3, max = 100, message = "Nome deve ter entre 3 e 100 caracteres")
-    private String nome;
+public class UserLoginDTO {
     
     @NotBlank(message = "Email é obrigatório")
     @Email(message = "Email inválido")
     private String email;
     
     @NotBlank(message = "Senha é obrigatória")
-    @Size(min = 6, message = "Senha deve ter pelo menos 6 caracteres")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String senha;
     
     // Construtores
-    public UserRequestDTO() {}
+    public UserLoginDTO() {}
     
-    public UserRequestDTO(String nome, String email, String senha) {
-        this.nome = nome;
+    public UserLoginDTO(String email, String senha) {
         this.email = email;
         this.senha = senha;
     }
     
     // Getters e Setters
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
-    
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
     

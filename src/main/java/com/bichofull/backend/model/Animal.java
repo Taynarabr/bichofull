@@ -10,7 +10,7 @@ import java.util.Objects;
 public class Animal {
     
     @Id
-    private Integer grupo; // 1 a 25 (chave primária)
+    private Integer grupo; 
     
     @Column(nullable = false, length = 50)
     private String nome;

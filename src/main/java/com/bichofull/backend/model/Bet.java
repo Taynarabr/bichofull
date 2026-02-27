@@ -70,7 +70,9 @@ public class Bet {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
-    protected Bet() {}
+    public Bet() {
+        this.status = BetStatus.PENDENTE;
+    }
     
     public Bet(User user, BetType type, BigDecimal value, String choice) {
         setUser(user);
@@ -254,4 +256,13 @@ public class Bet {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    public void setStatus(BetStatus pendente) {
+        throw new UnsupportedOperationException("Unimplemented method 'setStatus'");
+    }
+
+    public void setPrize(BigDecimal prize) {
+    this.prize = prize;
+    }
+
 }

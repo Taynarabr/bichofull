@@ -15,16 +15,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(nullable = false, length = 100)
+    @Column(name = "name", nullable = false, length = 100)  // ← MAPEADO para coluna "name"
     private String nome;
     
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(name = "email", nullable = false, unique = true, length = 100)  // ← MAPEADO para coluna "email"
     private String email;
     
-    @Column(nullable = false, length = 255)
+    @Column(name = "password", nullable = false, length = 255)  // ← MAPEADO para coluna "password"
     private String senha;
     
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(name = "balance", nullable = false, precision = 10, scale = 2)  // ← MAPEADO para coluna "balance"
     private BigDecimal saldo = new BigDecimal("1000.00");
     
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -34,10 +34,10 @@ public class User {
     private LocalDateTime updatedAt;
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Bet> bets = new ArrayList<>();  
+    private List<Bet> bets = new ArrayList<>();
     
-    // Construtor padrão (JPA)
-    protected User() {}
+    // Construtor padrão
+    public User() {}
     
     // Construtor com parâmetros
     public User(String nome, String email, String senha) {
@@ -82,7 +82,7 @@ public class User {
     
     public void adicionarBet(Bet bet) {
         bets.add(bet);
-        bet.setUser(this);  
+        bet.setUser(this);
     }
     
     public void removerBet(Bet bet) {
