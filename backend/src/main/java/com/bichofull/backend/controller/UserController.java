@@ -1,5 +1,7 @@
 package com.bichofull.backend.controller;
 
+import com.bichofull.backend.dto.AuthResponseDTO;
+import com.bichofull.backend.dto.UserLoginDTO;
 import com.bichofull.backend.dto.UserRequestDTO;
 import com.bichofull.backend.dto.UserResponseDTO;
 import com.bichofull.backend.service.UserService;
@@ -30,6 +32,12 @@ public class UserController {
     public ResponseEntity<List<UserResponseDTO>> findAll() {
         List<UserResponseDTO> users = userService.findAll();
         return ResponseEntity.ok(users);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody UserLoginDTO loginDTO) {
+        AuthResponseDTO response = userService.login(loginDTO);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
