@@ -7,9 +7,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public class UserResponseDTO {
     
     private Long id;
-    private String nome;
+    private String name;     
     private String email;
-    private BigDecimal saldo;
+    private BigDecimal balance; 
     
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime createdAt;
@@ -17,31 +17,31 @@ public class UserResponseDTO {
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime updatedAt;
     
-    // Construtores
+    // Constructors
     public UserResponseDTO() {}
     
-    public UserResponseDTO(Long id, String nome, String email, BigDecimal saldo, 
+    public UserResponseDTO(Long id, String name, String email, BigDecimal balance, 
                           LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
-        this.nome = nome;
+        this.name = name;
         this.email = email;
-        this.saldo = saldo;
+        this.balance = balance;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
     
-    // Getters e Setters
+    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
+    public String getName() { return name; } 
+    public void setName(String name) { this.name = name; }
     
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
     
-    public BigDecimal getSaldo() { return saldo; }
-    public void setSaldo(BigDecimal saldo) { this.saldo = saldo; }
+    public BigDecimal getBalance() { return balance; } 
+    public void setBalance(BigDecimal balance) { this.balance = balance; } 
     
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

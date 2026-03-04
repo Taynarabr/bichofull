@@ -6,7 +6,6 @@ import com.bichofull.backend.dto.UserLoginDTO;
 import com.bichofull.backend.dto.AuthResponseDTO;
 import com.bichofull.backend.model.User;
 import com.bichofull.backend.repository.UserRepository;
-import com.bichofull.backend.exception.InsufficientBalanceException;
 import com.bichofull.backend.exception.ResourceNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,9 +33,9 @@ public class UserService {
         }
         
         User user = new User();
-        user.setNome(request.getNome());
+        user.setNome(request.getName()); 
         user.setEmail(request.getEmail());
-        user.setSenha(passwordEncoder.encode(request.getSenha()));
+        user.setSenha(passwordEncoder.encode(request.getPassword())); 
         
         User savedUser = userRepository.save(user);
         return toDTO(savedUser);
@@ -46,13 +45,13 @@ public class UserService {
         User user = userRepository.findByEmail(loginDTO.getEmail())
             .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
         
-        if (!passwordEncoder.matches(loginDTO.getSenha(), user.getSenha())) {
+        if (!passwordEncoder.matches(loginDTO.getPassword(), user.getSenha())) {
             throw new RuntimeException("Senha inválida");
         }
         
-        // Versão simplificada - em produção use JWT de verdade
         String token = "simulated-jwt-token-" + user.getId() + "-" + System.currentTimeMillis();
         
+        // Ajustado para usar .getNome() da Entidade e passar para o campo 'name' do DTO
         return new AuthResponseDTO(token, user.getId(), user.getNome(), user.getEmail());
     }
     
@@ -93,8 +92,8 @@ public class UserService {
     public UserResponseDTO update(Long id, UserRequestDTO request) {
         User user = findUserById(id);
         
-        if (request.getNome() != null && !request.getNome().isEmpty()) {
-            user.setNome(request.getNome());
+        if (request.getName() != null && !request.getName().isEmpty()) {
+            user.setNome(request.getName());
         }
         if (request.getEmail() != null && !request.getEmail().isEmpty()) {
             if (!request.getEmail().equals(user.getEmail()) && 
@@ -103,8 +102,8 @@ public class UserService {
             }
             user.setEmail(request.getEmail());
         }
-        if (request.getSenha() != null && !request.getSenha().isEmpty()) {
-            user.setSenha(passwordEncoder.encode(request.getSenha()));
+        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+            user.setSenha(passwordEncoder.encode(request.getPassword()));
         }
         
         User updatedUser = userRepository.save(user);
@@ -127,11 +126,11 @@ public class UserService {
     private UserResponseDTO toDTO(User user) {
         UserResponseDTO dto = new UserResponseDTO();
         dto.setId(user.getId());
-        dto.setNome(user.getNome());
+        dto.setName(user.getNome()); 
         dto.setEmail(user.getEmail());
-        dto.setSaldo(user.getSaldo());
+        dto.setBalance(user.getSaldo()); 
         dto.setCreatedAt(user.getCreatedAt());
+        dto.setUpdatedAt(user.getUpdatedAt());
         return dto;
     }
-
 }

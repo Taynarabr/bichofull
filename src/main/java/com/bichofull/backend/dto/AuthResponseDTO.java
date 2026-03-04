@@ -11,16 +11,16 @@ public class AuthResponseDTO {
     private String tokenType = "Bearer";
     
     private Long id;
-    private String nome;
+    private String name;  
     private String email;
     
     // Construtores
     public AuthResponseDTO() {}
     
-    public AuthResponseDTO(String accessToken, Long id, String nome, String email) {
+    public AuthResponseDTO(String accessToken, Long id, String name, String email) {
         this.accessToken = accessToken;
         this.id = id;
-        this.nome = nome;
+        this.name = name;
         this.email = email;
     }
     
@@ -34,8 +34,8 @@ public class AuthResponseDTO {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
+    public String getName() { return name; } // Traduzido: getNome -> getName
+    public void setName(String name) { this.name = name; } // Traduzido: setNome -> setName
     
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
