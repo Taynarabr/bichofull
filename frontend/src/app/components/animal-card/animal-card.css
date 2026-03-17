@@ -1,0 +1,15 @@
+.animal-card {
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.animal-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+}
+
+/* Estilo para quando o card for clicado */
+.selected-card {
+  border: 2px solid #0A5A30 !important;
+  background-color: #e8f5e9; /* Um verde bem leve de fundo */
+}

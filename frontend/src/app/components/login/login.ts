@@ -23,7 +23,7 @@ export class LoginComponent {
     this.userService.login(this.loginData).subscribe({
       next: (res) => {
         alert('Login realizado com sucesso!');
-        this.router.navigate(['/home']); 
+        this.router.navigate(['/dashboard']); 
       },
       error: (err) => {
         alert('Falha no login: verifique e-mail e senha.');

@@ -1,0 +1,30 @@
+.animal-card {
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border: 2px solid transparent !important;
+  border-radius: 12px;
+}
+
+.animal-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.10) !important;
+}
+
+/* Essa classe é adicionada pelo Angular no bicho clicado */
+.selected-card {
+  border: 2px solid #0A5A30 !important;
+  background-color: #f4faf6;
+}
+
+.selected-card h4 {
+  color: #0A5A30;
+}
+
+.btn-warning {
+  background-color: #FFD700;
+  border: none;
+  color: #000;
+}
+.btn-warning:hover {
+  background-color: #F8C300;
+}
