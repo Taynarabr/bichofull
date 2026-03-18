@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { UserService } from '../../services/user.service';
+import { UserProfile } from '../../models/user.model';
 
 interface Animal {
   name: string;
@@ -12,8 +14,22 @@ interface Animal {
   styleUrls: ['./dashboard.css'],
   standalone: false
 })
-export class DashboardComponent {
-  // KPIs com nomes em inglês para bater com o HTML
+export class DashboardComponent implements OnInit {
+  betType: string = 'group';
+  betNumber: string = '';
+  selectedAmount: number = 0;
+  selectedAnimal: Animal | null = null;
+
+  drawSchedule = [
+    { name: 'PTM', time: '11:20', status: 'Encerrado' },
+    { name: 'PT',  time: '14:20', status: 'Encerrado' },
+    { name: 'PTV', time: '16:20', status: 'Encerrado' },
+    { name: 'PTN', time: '18:20', status: 'Aberto' },
+    { name: 'COR', time: '21:20', status: 'Aberto' }
+  ];
+
+  userProfile?: UserProfile;
+
   kpis = [
     { title: 'Total Bets', value: '1.284', subtitle: '↑ 12% since yesterday' },
     { title: 'Entries (R$)', value: 'R$ 12.450', subtitle: '↑ 8.5% since yesterday' },
@@ -54,14 +70,58 @@ export class DashboardComponent {
     { time: '11:00', animalName: 'Horse', group: '11', amount: 'R$ 20,00', prize: 'R$ 360,00', status: 'Won' }
   ];
 
-  selectedAnimal: Animal | null = null;
-  selectedAmount: number = 0;
+  constructor(private userService: UserService) {}
+
+  ngOnInit() {
+    this.getUserData(1); 
+  }
+
+  getUserData(id: number) {
+    this.userService.getUserById(id).subscribe({
+      next: (data: UserProfile) => {
+        this.userProfile = data;
+      },
+      error: (err: any) => console.error('Error fetching user data:', err)
+    });
+  }
+
+  isBetValid(): boolean {
+    const hasBalance = this.userProfile ? this.selectedAmount <= this.userProfile.balance : false;
+    if (this.selectedAmount <= 0 || !hasBalance) return false;
+
+    if (this.betType === 'group') return !!this.selectedAnimal;
+    if (this.betType === 'ten') return this.betNumber.length === 2;
+    if (this.betType === 'thousand') return this.betNumber.length === 4;
+    
+    return false;
+  }
+
+  resetBetFields() {
+    this.betNumber = '';
+    this.selectedAnimal = null;
+  }
 
   selectAnimal(animal: Animal) {
-    this.selectedAnimal = animal;
+    if (this.betType === 'group') {
+      this.selectedAnimal = animal;
+    }
   }
 
   setAmount(amount: number) {
     this.selectedAmount = amount;
+  }
+
+  confirmBet() {
+    if (this.isBetValid()) {
+      const betData = {
+        type: this.betType,
+        value: this.selectedAmount,
+        number: this.betType === 'group' ? this.selectedAnimal?.group : this.betNumber,
+        animalName: this.selectedAnimal?.name
+      };
+      
+      console.log('Enviando aposta para o Java:', betData);
+      alert(`Aposta de R$ ${this.selectedAmount} confirmada!`);
+    }
   }
 }
