@@ -26,7 +26,10 @@ public class User {
     
     @Column(name = "balance", nullable = false, precision = 10, scale = 2)  // ← MAPEADO para coluna "balance"
     private BigDecimal saldo = new BigDecimal("1000.00");
-    
+
+    @Column(name = "role", nullable = false, length = 20)
+    private String role = "USER";
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     
@@ -121,11 +124,25 @@ public class User {
     }
     
     public BigDecimal getSaldo() { return saldo; }
+
     
+
     public LocalDateTime getCreatedAt() { return createdAt; }
     
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     
+    public String getRole() { 
+            return role; 
+        }
+
+    public void setRole(String role) {
+        if (role == null || role.trim().isEmpty()) {
+            this.role = "USER";
+        } else {
+            this.role = role.toUpperCase();
+        }
+    }
+
     public List<Bet> getBets() { 
         return Collections.unmodifiableList(bets); 
     }

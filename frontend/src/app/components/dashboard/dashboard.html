@@ -1,145 +1,114 @@
 <div class="container-fluid py-4" style="background-color: #f4f6f9; min-height: 100vh;">
-  
-  <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded shadow-sm">
-    <h4 class="mb-0 fw-bold d-flex align-items-center gap-2" style="color: #0A5A30;">
-      <i class="bi bi-box-fill"></i> BichoFull
-    </h4>
-    <div class="d-flex align-items-center gap-3">
-      <span class="text-muted small">SALDO ATUAL</span>
-      <strong class="fs-5" style="color: #0A5A30;">
-        {{ userProfile?.balance | currency:'BRL' }}
-      </strong>
-      <button class="btn btn-warning fw-bold px-4 rounded-pill">Depositar</button>
+
+  <div class="text-center py-5" *ngIf="isLoading">
+    <div class="spinner-border text-success" style="width: 3rem; height: 3rem;" role="status">
+      <span class="visually-hidden">Carregando...</span>
     </div>
+    <h5 class="mt-3 text-muted">Buscando seus dados...</h5>
   </div>
 
-  <div class="row g-3 mb-4">
-    <div class="col-12 col-md-6 col-xl-3" *ngFor="let kpi of kpis">
-      <div class="card border-0 shadow-sm h-100 p-2">
-        <div class="card-body">
-          <p class="text-muted mb-1 small">{{ kpi.title }}</p>
-          <h3 class="fw-bold mb-1">{{ kpi.value }}</h3>
-          <small class="text-success" style="font-size: 0.75rem;">{{ kpi.subtitle }}</small>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div *ngIf="!isLoading && userProfile">
 
-  <div class="row g-4 mb-4">
-    
-    <div class="col-12 col-lg-8">
-      <h5 class="fw-bold mb-3">Grade de Apostas <span class="badge bg-warning text-dark ms-2">Atualizado agora</span></h5>
-      <div class="row g-3">
-        <div class="col-4 col-md-3 col-xl-2" *ngFor="let item of animalsList">
-          <app-animal-card 
-            [animalData]="item" 
-            [isSelected]="selectedAnimal?.group === item.group"
-            (click)="selectAnimal(item)"
-            style="cursor: pointer;">
-          </app-animal-card>
-        </div>
+    <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded shadow-sm">
+      <h4 class="mb-0 fw-bold d-flex align-items-center gap-2" style="color: #0A5A30;">
+        <i class="bi bi-box-fill"></i> BichoFull
+        <span class="badge rounded-pill" [ngClass]="userProfile.role === 'ADMIN' ? 'bg-primary' : 'bg-secondary'" style="font-size: 0.4em;">
+          {{ userProfile.role === 'ADMIN' ? 'ADMIN' : 'JOGADOR' }}
+        </span>
+      </h4>
+      
+      <div class="d-flex align-items-center gap-3">
+        <span class="text-muted small">SALDO ATUAL</span>
+        <strong class="fs-5" style="color: #0A5A30;">
+          {{ userProfile.balance | currency:'BRL' }}
+        </strong>
+        <button class="btn btn-warning fw-bold px-4 rounded-pill">Depositar</button>
       </div>
     </div>
 
-    <div class="col-12 col-lg-4">
-      <div class="card border-0 shadow-sm mb-3">
-        <div class="card-body p-4">
-          <h5 class="fw-bold mb-4">Fazer Aposta</h5>
-
-          <small class="text-muted d-block mb-2 fw-bold">TIPO DE JOGO</small>
-          <select class="form-select mb-3" [(ngModel)]="betType" (change)="resetBetFields()">
-            <option value="group">Grupo (Animal)</option>
-            <option value="ten">Dezena</option>
-            <option value="thousand">Milhar</option>
-          </select>
-          
-          <div *ngIf="betType !== 'group'" class="mb-3">
-            <small class="text-muted d-block mb-2 fw-bold text-uppercase">Número da Aposta</small>
-            <input type="text" class="form-control form-control-lg text-center fw-bold" 
-                  [maxLength]="betType === 'thousand' ? 4 : 2"
-                  [(ngModel)]="betNumber" 
-                  [placeholder]="betType === 'thousand' ? '0000' : '00'">
-          </div>
-
-          <div *ngIf="betType === 'group'" class="p-3 rounded mb-4 d-flex justify-content-between align-items-center" style="background-color: #f8f9fa;">
-            <div>
-              <small class="text-muted d-block">Animal Selecionado</small>
-              <strong class="fs-5">{{ selectedAnimal?.name || 'Selecione...' }}</strong>
-            </div>
-            <div class="badge rounded p-2 fs-5" style="background-color: #0A5A30;">
-              {{ selectedAnimal?.group || '--' }}
-            </div>
-          </div>
-
-          <small class="text-muted d-block mb-2 fw-bold text-uppercase">Valor da Aposta (R$)</small>
-          <div class="input-group mb-4">
-            <span class="input-group-text bg-white border-end-0">R$</span>
-            <input type="number" class="form-control border-start-0" [(ngModel)]="selectedAmount" placeholder="0.00">
-          </div>
-
-          <button class="btn w-100 text-white fw-bold py-2 shadow-sm" 
-                  [disabled]="!isBetValid()"
-                  [style.background-color]="isBetValid() ? '#0A5A30' : '#ccc'"
-                  (click)="confirmBet()">
-            Confirmar Aposta
+    <div *ngIf="userProfile.role === 'ADMIN'">
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body d-flex justify-content-between align-items-center">
+          <h5 class="fw-bold mb-0">Painel de Controle de Sorteios</h5>
+          <button class="btn btn-danger fw-bold px-4 py-2 rounded-pill" (click)="gerarSorteio()">
+            <i class="bi bi-plus-circle-fill"></i> Gerar Novo Sorteio Agora
           </button>
         </div>
       </div>
 
       <div class="card border-0 shadow-sm">
-        <div class="card-body p-3">
-          <h6 class="fw-bold mb-3"><i class="bi bi-clock"></i> Próximos Sorteios</h6>
-          <div class="d-flex flex-column gap-2">
-            <div *ngFor="let schedule of drawSchedule" 
-                class="d-flex justify-content-between align-items-center p-2 border-bottom last-child-border-0"
-                [class.opacity-50]="schedule.status === 'Encerrado'">
-              <div>
-                <span class="fw-bold text-uppercase small">{{ schedule.name }}</span>
-                <div class="small text-muted">{{ schedule.time }}</div>
+        <div class="card-header bg-white py-3">
+          <h6 class="fw-bold mb-0">Histórico de Sorteios Armazenados</h6>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="bg-light">
+                <tr>
+                  <th class="px-4">Data e Hora</th>
+                  <th>1º Prêmio</th>
+                  <th>2º Prêmio</th>
+                  <th>3º Prêmio</th>
+                  <th>4º Prêmio</th>
+                  <th>5º Prêmio</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let d of draws">
+                  <td class="px-4 fw-bold text-muted">{{ d.drawDate }}</td>
+                  <td><span class="badge bg-success fs-6">{{ d.milhar_1 }}</span></td>
+                  <td>{{ d.milhar_2 }}</td>
+                  <td>{{ d.milhar_3 }}</td>
+                  <td>{{ d.milhar_4 }}</td>
+                  <td>{{ d.milhar_5 }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="userProfile.role !== 'ADMIN'">
+      <div class="row g-4">
+        <div class="col-12 col-lg-8">
+          <h5 class="fw-bold mb-3">Escolha seu Bicho</h5>
+          <div class="row g-3">
+            <div class="col-4 col-md-3 col-xl-2" *ngFor="let item of animalsList">
+              <app-animal-card 
+                [animalData]="item" 
+                [isSelected]="selectedAnimal?.group === item.group"
+                (click)="selectAnimal(item)">
+              </app-animal-card>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-lg-4">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+              <h5 class="fw-bold mb-4">Fazer Aposta</h5>
+              <select class="form-select mb-3" [(ngModel)]="betType">
+                <option value="group">Grupo (Animal)</option>
+                <option value="ten">Dezena</option>
+                <option value="thousand">Milhar</option>
+              </select>
+              
+              <div class="input-group mb-4">
+                <span class="input-group-text bg-white">R$</span>
+                <input type="number" class="form-control" [(ngModel)]="selectedAmount" placeholder="Valor">
               </div>
-              <span class="badge rounded-pill" [ngClass]="schedule.status === 'Aberto' ? 'bg-success' : 'bg-secondary'">
-                {{ schedule.status }}
-              </span>
+
+              <button class="btn w-100 text-white fw-bold py-2 shadow-sm" 
+                      [style.background-color]="isBetValid() ? '#0A5A30' : '#ccc'"
+                      (click)="confirmBet()">
+                Confirmar Aposta
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="card border-0 shadow-sm mt-2">
-    <div class="card-body p-4">
-      <h5 class="fw-bold mb-4">Últimos Lançamentos</h5>
-      <div class="table-responsive">
-        <table class="table table-borderless align-middle mb-0">
-          <thead class="text-muted small border-bottom">
-            <tr>
-              <th>Horário</th>
-              <th>Tipo</th>
-              <th>Bicho/Nº</th>
-              <th>Valor</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of launches" class="border-bottom">
-              <td class="text-muted">{{ item.time }}</td>
-              <td class="text-uppercase small fw-bold">{{ item.animalName ? 'Grupo' : 'Número' }}</td>
-              <td>
-                <span class="fw-bold">{{ item.animalName || item.group }}</span>
-                <span *ngIf="item.animalName" class="badge bg-light text-dark border ms-2">{{ item.group }}</span>
-              </td>
-              <td>{{ item.amount }}</td>
-              <td>
-                <span class="badge rounded-pill" [ngClass]="item.status === 'Won' ? 'border border-success text-success' : 'border border-secondary text-secondary'">
-                  {{ item.status }}
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
+  </div> 
 </div>

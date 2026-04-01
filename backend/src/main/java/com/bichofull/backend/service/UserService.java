@@ -26,7 +26,6 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
     
-    // ===== REGISTRO E AUTENTICAÇÃO =====
     public UserResponseDTO register(UserRequestDTO request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email já cadastrado");
@@ -36,6 +35,8 @@ public class UserService {
         user.setNome(request.getName()); 
         user.setEmail(request.getEmail());
         user.setSenha(passwordEncoder.encode(request.getPassword())); 
+        
+        user.setRole("USER");
         
         User savedUser = userRepository.save(user);
         return toDTO(savedUser);
@@ -51,14 +52,12 @@ public class UserService {
         
         String token = "simulated-jwt-token-" + user.getId() + "-" + System.currentTimeMillis();
         
-        // Ajustado para usar .getNome() da Entidade e passar para o campo 'name' do DTO
-        return new AuthResponseDTO(token, user.getId(), user.getNome(), user.getEmail());
+        return new AuthResponseDTO(token, user.getId(), user.getNome(), user.getEmail(), user.getRole());
     }
     
-    // ===== OPERAÇÕES DE SALDO =====
     public void debitBalance(Long userId, BigDecimal amount) {
         User user = findUserById(userId);
-        user.debitarSaldo(amount);
+        user.debitarSaldo(amount); // Método de negócio dentro da entidade User
         userRepository.save(user);
     }
     
@@ -78,7 +77,6 @@ public class UserService {
         return user.getSaldo();
     }
     
-    // ===== CRUD BÁSICO =====
     public UserResponseDTO findById(Long id) {
         return toDTO(findUserById(id));
     }
@@ -89,6 +87,7 @@ public class UserService {
             .collect(Collectors.toList());
     }
     
+    @SuppressWarnings("null")
     public UserResponseDTO update(Long id, UserRequestDTO request) {
         User user = findUserById(id);
         
@@ -110,6 +109,7 @@ public class UserService {
         return toDTO(updatedUser);
     }
     
+    @SuppressWarnings("null")
     public void delete(Long id) {
         if (!userRepository.existsById(id)) {
             throw new ResourceNotFoundException("Usuário não encontrado");
@@ -117,7 +117,6 @@ public class UserService {
         userRepository.deleteById(id);
     }
     
-    // ===== MÉTODOS AUXILIARES =====
     public User findUserById(Long id) {
         return userRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
@@ -128,7 +127,8 @@ public class UserService {
         dto.setId(user.getId());
         dto.setName(user.getNome()); 
         dto.setEmail(user.getEmail());
-        dto.setBalance(user.getSaldo()); 
+        dto.setBalance(user.getSaldo());
+        dto.setRole(user.getRole());
         dto.setCreatedAt(user.getCreatedAt());
         dto.setUpdatedAt(user.getUpdatedAt());
         return dto;

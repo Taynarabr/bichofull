@@ -27,8 +27,6 @@ public class DrawDTO {
     @JsonProperty("milhar_5")
     private String milhar5;
     
-    private List<String> allMilhares;
-    private List<String> dezenas;
     
     // Construtores
     public DrawDTO() {}

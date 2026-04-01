@@ -257,8 +257,8 @@ public class Bet {
         return Objects.hash(id);
     }
 
-    public void setStatus(BetStatus pendente) {
-        throw new UnsupportedOperationException("Unimplemented method 'setStatus'");
+    public void setStatus(BetStatus status) {
+        this.status = status;
     }
 
     public void setPrize(BigDecimal prize) {

@@ -9,25 +9,26 @@ import { Router } from '@angular/router';
   standalone: false 
 })
 export class LoginComponent {
-  loginData = {
-    email: '',
-    password: ''
-  };
+  loginData = { email: '', password: '' };
 
-  constructor(
-    private userService: UserService, 
-    private router: Router
-  ) {}
+  constructor(private userService: UserService, private router: Router) {}
 
   onLogin() {
+    console.log('1. Iniciando tentativa de login...');
     this.userService.login(this.loginData).subscribe({
-      next: (res) => {
-        alert('Login realizado com sucesso!');
-        this.router.navigate(['/dashboard']); 
+      next: (res: any) => {
+        console.log('2. Resposta do servidor:', res);
+        if (res && res.id) {
+          localStorage.setItem('userId', res.id.toString());
+          console.log('3. Redirecionando para o Dashboard...');
+          this.router.navigate(['/dashboard']); 
+        } else {
+          alert('Erro: Resposta de login inválida.');
+        }
       },
       error: (err) => {
-        alert('Falha no login: verifique e-mail e senha.');
-        console.error(err);
+        console.error('Erro no Login:', err);
+        alert('Falha no login: verifique o seu e-mail e senha.');
       }
     });
   }
