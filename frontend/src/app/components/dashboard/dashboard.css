@@ -1,27 +1,57 @@
-/* No seu dashboard.css */
+/* =========================================
+   ESTRUTURA PRINCIPAL (REFERÊNCIA)
+   ========================================= */
+
+/* O Container Grande que abraça os bichos e as apostas */
+.game-container {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  border-top: 6px solid #D95360; /* Borda superior vermelha */
+  padding: 24px;
+}
+
+/* =========================================
+   CARDS DE ANIMAIS
+   ========================================= */
 
 .animal-card {
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* Transição mais suave */
-  border: 2px solid #eee !important; /* Borda leve por padrão */
-  border-radius: 16px; /* Bordas mais arredondadas (estilo moderno) */
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 12px;
   background: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 15px 5px;
+  height: 100%;
 }
 
+/* Hover: Apenas levanta levemente e ganha sombra (SEM COR) */
 .animal-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 20px rgba(0,0,0,0.08) !important;
-  border-color: #D95360 !important; /* Alterado do verde para o vermelho/rosado */
+  transform: translateY(-4px);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.08) !important;
+  border-color: #ccc !important;
 }
 
+/* Efeito de "clique" físico */
 .animal-card:active {
   transform: scale(0.96);
 }
 
+/* Card Selecionado: Fica totalmente vermelho com texto branco */
 .selected-card {
-  border: 2px solid #D95360 !important; /* Alterado do verde para o vermelho/rosado */
-  background-color: #fff5f6 !important; /* Alterado para fundo levemente rosado */
-  box-shadow: 0 4px 15px rgba(217, 83, 96, 0.2) !important; /* Sombra ajustada para o tom rosado */
+  border: 1px solid #D95360 !important;
+  background-color: #D95360 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(217, 83, 96, 0.3) !important;
+}
+
+/* Garante que o texto dentro do card selecionado fique branco */
+.selected-card h6, .selected-card span, .selected-card small {
+  color: #ffffff !important;
 }
 
 .group-badge {
@@ -32,7 +62,24 @@
   font-weight: 700;
 }
 
-/* Efeitos de Hover para o Menu e Ícones do Topo */
+/* =========================================
+   BOTÕES DE ATALHO DE VALOR (R$ 5, R$ 10, R$ 50)
+   ========================================= */
+.btn-value-shortcut {
+  border: 1px solid #ffdde0;
+  color: #D95360;
+  background-color: white;
+  border-radius: 20px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-value-shortcut:hover, .btn-value-shortcut.active {
+  background-color: #D95360;
+  color: white;
+  transform: scale(1.05);
+}
+
 /* =========================================
    EFEITOS GLOBAIS DE INTERAÇÃO (TODA A TELA)
    ========================================= */
@@ -42,14 +89,12 @@
   transition: transform 0.2s ease-in-out, box-shadow 0.2s, filter 0.2s !important;
 }
 
-/* O botão só pula se não estiver bloqueado (disabled) */
 .btn:not(:disabled):hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 20px rgba(217, 83, 96, 0.2) !important;
-  filter: brightness(0.95); /* Deixa a cor levemente mais intensa */
+  filter: brightness(0.95);
 }
 
-/* Cursor de "proibido" quando o botão confirmar aposta estiver cinza/bloqueado */
 .btn:disabled {
   cursor: not-allowed !important;
 }
@@ -59,17 +104,15 @@
   transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
 }
 
-/* Quando passa o mouse no select ou input */
 .form-control:hover:not(:disabled), .form-select:hover:not(:disabled) {
   border-color: #D95360;
-  background-color: #fff9f9 !important; /* Fundo rosadinho para mostrar que pode clicar/digitar */
+  background-color: #fff9f9 !important;
   cursor: pointer;
 }
 
-/* Quando o usuário clica para digitar (Focus) */
 .form-control:focus, .form-select:focus {
   border-color: #D95360;
-  box-shadow: 0 0 0 0.25rem rgba(217, 83, 96, 0.25); /* Brilho rosado por fora do input */
+  box-shadow: 0 0 0 0.25rem rgba(217, 83, 96, 0.25);
   background-color: #fff !important;
 }
 
@@ -80,6 +123,48 @@
 }
 
 .table-hover tbody tr:hover {
-  background-color: #fff5f6 !important; /* Fundo rosado claro */
-  transform: scale(1.01); /* A linha dá um zoom levíssimo */
+  background-color: #fff5f6 !important;
+  transform: scale(1.01);
+}
+
+/* =========================================
+   SIDEBAR E ESTATÍSTICAS
+   ========================================= */
+
+.stat-card {
+  border: 1px solid #eee;
+  border-radius: 16px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background-color: #fff;
+  margin-bottom: 12px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.05) !important;
+}
+
+.stat-icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  background-color: #fff5f6;
+  color: #D95360;
+}
+
+.dica-card {
+  background-color: #fffafb;
+  border: 1px solid #ffdde0;
+  border-radius: 16px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
 }
