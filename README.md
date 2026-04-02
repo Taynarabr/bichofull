@@ -1,65 +1,111 @@
-# 🎰 Jogo do Bicho Full (Bichofull)
+# 🎲 BichoFull - Simulador Full Stack do Jogo do Bicho
 
-Um sistema web completo, moderno e responsivo para gestão de apostas do clássico Jogo do Bicho, desenvolvido com **Spring Boot (Java)** no backend e **Angular (TypeScript)** no frontend. 
+O **BichoFull** é um sistema completo, moderno e responsivo para gestão de apostas e simulação do clássico Jogo do Bicho. Este é um projeto acadêmico desenvolvido para o **Laboratório de Engenharia de Software**, focado em regras de negócio complexas, integração contínua (CI/CD) e atualização de dados em tempo real.
 
-Projeto acadêmico focado na implementação de regras de negócio complexas, controle de fluxo financeiro, autenticação e atualização de dados em tempo real.
+---
+
+## 🚀 Status do Projeto: [![CI BichoFull](https://github.com/Taynarabr/bichofull/actions/workflows/ci.yml/badge.svg)](https://github.com/Taynarabr/bichofull/actions)
+
+O selo acima indica que o código passou em todos os testes automatizados, builds e verificações de padrões (Lint).
 
 ---
 
 ## ✨ Funcionalidades Principais
 
 ### 👤 Painel do Jogador
-* **Autenticação Segura:** Registro e Login com senhas criptografadas.
-* **Motor de Apostas:** Suporte para apostas em Grupos (Animais), Dezenas e Milhares, com cálculo instantâneo do potencial de ganho.
-* **Sistema Financeiro (PIX):** Simulação de ambiente transacional com depósito via QR Code/Pix Copia e Cola, saque inteligente com validação de saldo e histórico de movimentações.
-* **Dashboard em Tempo Real:** Atualização silenciosa (Auto-Refresh) a cada 10 segundos, trazendo novos sorteios e status das apostas sem a necessidade de recarregar a página (F5).
-* **Gestão de Perfil:** Atualização de dados cadastrais (nome, e-mail e redefinição de senha).
-* **Estatísticas:** Histórico completo de apostas, taxa de vitórias e total de ganhos.
+* **Autenticação Segura:** Login e Cadastro com JWT e criptografia de senhas.
+* **Motor de Apostas:** Apostas em Grupos (Animais), Dezenas e Milhares, seguindo a tabela oficial.
+* **Cálculo de Prêmios:** Pagamentos automáticos de **18x (Grupo)** a **4000x (Milhar)** o valor apostado.
+* **Gestão Financeira:** Simulação de depósitos via Pix e saques inteligentes com validação de saldo fictício (Saldo inicial de R$ 1.000,00).
+* **Dashboard em Tempo Real:** Atualização automática (Polling) a cada 10 segundos para exibir novos sorteios e status de apostas.
 
 ### ⚙️ Painel do Administrador (Admin)
-* Geração de resultados oficiais (Sorteios).
-* Distribuição de prêmios em até 5 faixas (1º ao 5º prêmio).
-* Visão geral de todos os sorteios registrados no sistema.
+* **Geração de Sorteios:** Motor para sorteio de resultados oficiais (1º ao 5º prêmio).
+* **Auditoria:** Visão geral de todos os sorteios e apostas registradas no banco de dados.
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
 **Frontend:**
-* [Angular](https://angular.dev/) (Framework principal)
-* [TypeScript](https://www.typescriptlang.org/)
-* [Bootstrap 5](https://getbootstrap.com/) & CSS3 (UI/UX Responsivo)
-* [SweetAlert2](https://sweetalert2.github.io/) (Pop-ups e Notificações interativas)
-* RxJS (Programação reativa e Polling)
+* [Angular 17+](https://angular.dev/)
+* [Bootstrap 5](https://getbootstrap.com/) (UI Responsivo)
+* [SweetAlert2](https://sweetalert2.github.io/) (Feedbacks Visuais)
+* Vitest & Playwright (Testes Unitários e Headless)
 
 **Backend:**
-* [Java](https://www.java.com/)
-* [Spring Boot](https://spring.io/projects/spring-boot)
-* Spring Security (Autenticação e Criptografia)
-* Spring Data JPA / Hibernate (ORM)
+* [Java 21](https://www.oracle.com/java/technologies/downloads/) + [Spring Boot 3](https://spring.io/projects/spring-boot)
+* Spring Security + JWT
+* Spring Data JPA + Hibernate
+* Maven (Gerenciador de Dependências)
 
 **Banco de Dados:**
-* [MySQL](https://www.mysql.com/)
+* MySQL / MariaDB
 
 ---
 
-## 🚀 Como executar o projeto na sua máquina
+## 🚀 Como Executar o Projeto na sua Máquina
 
-### Pré-requisitos
-Antes de começar, certifique-se de ter instalado em sua máquina:
-* Node.js e NPM
-* Angular CLI (`npm install -g @angular/cli`)
-* Java JDK (versão 17 ou superior)
-* Maven
-* MySQL Server rodando na porta padrão (3306)
+### 📋 Pré-requisitos
+Certifique-se de ter instalado:
+1.  **Java JDK 21** ou superior.
+2.  **Node.js** (versão 20 recomendada) e **NPM**.
+3.  **Maven**.
+4.  **MySQL Server** rodando na porta padrão (3306).
 
-### 1. Configurando o Banco de Dados (Backend)
-1. Crie um banco de dados no MySQL chamado `bichofull`.
-2. Acesse a pasta `backend/src/main/resources` e abra o arquivo `application.properties`.
-3. Verifique e ajuste as credenciais do seu banco de dados:
-   ```properties
-   spring.datasource.url=jdbc:mysql://localhost:3306/bichofull
-   spring.datasource.username=seu_usuario
-   spring.datasource.password=sua_senha
+### 1. Configurando o Banco de Dados
+1.  No seu MySQL, crie o banco de dados:
+    ```sql
+    CREATE DATABASE bichofull;
+    ```
+2.  Acesse `backend/src/main/resources/application.properties` e ajuste as credenciais:
+    ```properties
+    spring.datasource.url=jdbc:mysql://localhost:3306/bichofull
+    spring.datasource.username=seu_usuario
+    spring.datasource.password=sua_senha
+    ```
 
-**Desenvolvido por:** Taynara Batista Ribeiro - Engenharia de Software 6º Período.
+### 2. Executando o Backend (Spring Boot)
+Abra um terminal na pasta raiz e execute:
+```bash
+cd backend
+mvn clean install
+mvn spring-boot:run
+API: Disponível em http://localhost:8080.
+
+Swagger (Documentação): http://localhost:8080/swagger-ui/index.html.
+
+3. Executando o Frontend (Angular)
+Abra um novo terminal na pasta raiz e execute:
+
+Bash
+cd frontend
+npm install
+npm start
+URL: Acesse o sistema em http://localhost:4200.
+
+🧪 Qualidade e Automação (CI/CD)
+Este repositório utiliza GitHub Actions para garantir a integridade de cada entrega. Em todo push ou pull_request, o sistema valida:
+
+Build Check: Garante que o frontend e o backend compilam sem erros.
+
+Linter: Verifica a padronização e boas práticas do código Angular.
+
+Testes Unitários: Execução de suítes de testes automatizados via Vitest para garantir que mudanças no código não quebrem a lógica de negócios.
+
+📌 Gestão do Projeto
+O desenvolvimento foi orquestrado via GitHub Projects utilizando a metodologia Kanban, com as colunas:
+
+Backlog: Ideias e futuras implementações.
+
+To Do: Tarefas aguardando início.
+
+In Progress: Atividades em desenvolvimento.
+
+Review/QA: Código em fase de teste e revisão de Pull Request.
+
+Done: Funcionalidades integradas e validadas pelo CI.
+
+Desenvolvido por: Taynara Batista Ribeiro
+
+6º Período - Engenharia de Software
