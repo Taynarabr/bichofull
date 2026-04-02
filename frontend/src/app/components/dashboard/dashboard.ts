@@ -195,9 +195,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       next: (res) => {
         Swal.fire({
           title: 'Aposta Confirmada!',
-          text: 'Sua aposta foi registrada. Boa sorte!',
+          text: `Boa sorte com o seu ${this.selectedAnimal!.name}!`,
           icon: 'success',
-          confirmButtonColor: '#D95360'
+          showConfirmButton: false,
+          timer: 2000,
+          backdrop: `rgba(0,123,0,0.1)`
         });
         this.getUserData(this.userProfile!.id, true); 
         this.carregarApostas(this.userProfile!.id); 
@@ -205,6 +207,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.selectedAnimal = null;
         this.isLoading = false;
         this.cdr.detectChanges();
+        this.scrollToTop();
       },
       error: (err) => {
         Swal.fire({
@@ -440,6 +443,49 @@ export class DashboardComponent implements OnInit, OnDestroy {
       text: 'Ao utilizar o Bicho Full, você declara ter mais de 18 anos. O uso da plataforma é para fins de entretenimento e o usuário é responsável pela gestão de seu saldo. Jogos podem causar vício, jogue com responsabilidade.',
       icon: 'info',
       confirmButtonColor: '#D95360'
+    });
+  }
+
+  verNotificacoes() {
+    Swal.fire({
+      title: 'Suas Notificações',
+      html: `
+        <div style="text-align: left; font-size: 0.9rem;">
+          <div id="notif-sorteio" style="padding: 12px; border-bottom: 1px solid #eee; background: #f9f9f9; border-radius: 8px; margin-bottom: 8px; cursor: pointer;">
+            <small class="text-success fw-bold">NOVO RESULTADO</small><br>
+            O sorteio das 14h (PT) já saiu! <span class="text-danger fw-bold">Clique aqui para ver</span>.
+          </div>
+
+          <div id="notif-bonus" style="padding: 12px; border-bottom: 1px solid #eee; cursor: pointer;">
+            <small class="text-muted fw-bold">SISTEMA</small><br>
+            Seu bônus de R$ 1000 no primeiro depósito está ativo! <span class="text-primary">Saiba mais</span>.
+          </div>
+        </div>
+      `,
+      icon: 'info',
+      showConfirmButton: true,
+      confirmButtonText: 'Fechar',
+      confirmButtonColor: '#6c757d',
+      
+      didOpen: () => {
+        const btnSorteio = document.getElementById('notif-sorteio');
+        const btnBonus = document.getElementById('notif-bonus');
+
+        if (btnSorteio) {
+          btnSorteio.addEventListener('click', () => {
+            this.activeTab = 'resultados'; // Direciona para a aba
+            this.scrollToTop();           // Sobe a tela
+            Swal.close();                 // Fecha o alerta
+          });
+        }
+
+        if (btnBonus) {
+          btnBonus.addEventListener('click', () => {
+            this.verRegras(); // Abre as regras ou termos de bônus
+            // Swal.close() não precisa aqui se você quiser que o outro abra por cima
+          });
+        }
+      }
     });
   }
 }

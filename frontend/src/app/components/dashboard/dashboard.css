@@ -228,3 +228,20 @@ footer .container {
 .logo-icon i {
   line-height: 1;
 }
+footer ul li.active {
+  color: #D95360 !important;
+  font-weight: bold;
+}
+
+.bi-bell:hover {
+  color: #D95360 !important;
+  animation: bell-ring 0.5s ease-in-out;
+}
+
+@keyframes bell-ring {
+  0% { transform: rotate(0); }
+  25% { transform: rotate(15deg); }
+  50% { transform: rotate(-15deg); }
+  75% { transform: rotate(10deg); }
+  100% { transform: rotate(0); }
+}
