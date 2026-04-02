@@ -22,7 +22,7 @@
         </div>
         <button class="btn text-white fw-bold px-3 py-2 rounded-pill shadow-sm d-flex align-items-center gap-1" 
                 style="background-color: #28a745; transition: transform 0.2s;" 
-                (click)="activeTab = 'financeiro'"
+                (click)="activeTab = 'financeiro'; financeAction = 'deposit'"
                 onmouseover="this.style.transform='scale(1.05)'" 
                 onmouseout="this.style.transform='scale(1)'">
           <i class="bi bi-plus-circle"></i> <span class="d-none d-sm-inline">Depositar</span>
@@ -51,7 +51,6 @@
     </div>
 
     <div class="d-flex justify-content-start justify-content-sm-center gap-3 gap-md-5 py-2 bg-white shadow-sm mb-4 overflow-auto flex-nowrap px-3 px-md-0 w-100" style="border-bottom: 2px solid #f8f9fa;">
-      
       <span *ngIf="userProfile?.role !== 'ADMIN'" class="py-2 px-2 text-nowrap" 
             (click)="activeTab = 'jogo'"
             [style.color]="activeTab === 'jogo' ? '#D95360' : '#6c757d'"
@@ -82,6 +81,14 @@
             [style.border-bottom]="activeTab === 'historico' ? '3px solid #D95360' : 'none'"
             style="cursor: pointer; font-weight: bold;">
         <i class="bi bi-clock-history me-1"></i> Histórico
+      </span>
+
+      <span *ngIf="userProfile?.role !== 'ADMIN'" class="py-2 px-2 text-nowrap" 
+            (click)="activeTab = 'financeiro'; financeAction = 'withdraw'"
+            [style.color]="activeTab === 'financeiro' ? '#D95360' : '#6c757d'"
+            [style.border-bottom]="activeTab === 'financeiro' ? '3px solid #D95360' : 'none'"
+            style="cursor: pointer; font-weight: bold;">
+        <i class="bi bi-cash-coin me-1"></i> Banco
       </span>
       
       <span *ngIf="activeTab === 'perfil'" class="py-2 px-2 text-nowrap" 
@@ -349,63 +356,121 @@
     <div *ngIf="activeTab === 'financeiro' && userProfile?.role !== 'ADMIN'" class="px-3 px-md-5 pb-5">
       <div class="row justify-content-center">
         <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+
+          <div class="d-flex justify-content-center gap-2 mb-4 bg-white p-2 rounded-pill shadow-sm border">
+            <button class="btn rounded-pill flex-fill fw-bold" 
+                    [ngClass]="financeAction === 'deposit' ? 'btn-success' : 'btn-light text-muted'" 
+                    (click)="financeAction = 'deposit'; pixGenerated = false;">
+              <i class="bi bi-box-arrow-in-down"></i> Depositar
+            </button>
+            <button class="btn rounded-pill flex-fill fw-bold" 
+                    [ngClass]="financeAction === 'withdraw' ? 'btn-danger' : 'btn-light text-muted'" 
+                    (click)="financeAction = 'withdraw'; pixGenerated = false;">
+              <i class="bi bi-box-arrow-up"></i> Sacar
+            </button>
+          </div>
           
-          <div class="card border-0 shadow-sm rounded-4 overflow-hidden" style="border-top: 6px solid #28a745 !important;" *ngIf="!pixGenerated">
-            <div class="card-body p-4 p-md-5 text-center">
-              <div class="mb-4">
-                <div class="rounded-circle bg-success bg-opacity-10 d-inline-flex justify-content-center align-items-center mb-3" style="width: 80px; height: 80px;">
-                  <i class="bi bi-wallet2 text-success" style="font-size: 2.5rem;"></i>
+          <div *ngIf="financeAction === 'deposit'">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden" style="border-top: 6px solid #28a745 !important;" *ngIf="!pixGenerated">
+              <div class="card-body p-4 p-md-5 text-center">
+                <div class="mb-4">
+                  <div class="rounded-circle bg-success bg-opacity-10 d-inline-flex justify-content-center align-items-center mb-3" style="width: 80px; height: 80px;">
+                    <i class="bi bi-wallet2 text-success" style="font-size: 2.5rem;"></i>
+                  </div>
+                  <h3 class="fw-bold text-dark">Adicionar Saldo</h3>
+                  <p class="text-muted small">Insira fundos via PIX de forma instantânea para continuar jogando.</p>
                 </div>
-                <h3 class="fw-bold text-dark">Adicionar Saldo</h3>
-                <p class="text-muted small">Insira fundos via PIX de forma instantânea para continuar jogando.</p>
-              </div>
 
-              <div class="text-start mb-4">
-                <label class="small fw-bold text-muted mb-2 text-uppercase">Valor do Depósito</label>
-                <div class="input-group input-group-lg mb-3 shadow-sm rounded-3 overflow-hidden border">
-                  <span class="input-group-text bg-white border-0 text-secondary">R$</span>
-                  <input type="number" class="form-control border-0 ps-0 fw-bold text-dark" [(ngModel)]="depositAmount" placeholder="0,00">
+                <div class="text-start mb-4">
+                  <label class="small fw-bold text-muted mb-2 text-uppercase">Valor do Depósito</label>
+                  <div class="input-group input-group-lg mb-3 shadow-sm rounded-3 overflow-hidden border">
+                    <span class="input-group-text bg-white border-0 text-secondary">R$</span>
+                    <input type="number" class="form-control border-0 ps-0 fw-bold text-dark" [(ngModel)]="depositAmount" placeholder="0,00">
+                  </div>
+                  
+                  <div class="d-flex gap-2">
+                    <button class="btn btn-outline-success flex-fill py-2 fw-bold rounded-3" (click)="setDepositAmount(20)">R$ 20</button>
+                    <button class="btn btn-outline-success flex-fill py-2 fw-bold rounded-3" (click)="setDepositAmount(50)">R$ 50</button>
+                    <button class="btn btn-outline-success flex-fill py-2 fw-bold rounded-3" (click)="setDepositAmount(100)">R$ 100</button>
+                  </div>
                 </div>
+
+                <button class="btn w-100 text-white fw-bold py-3 rounded-3 shadow-sm mb-3 d-flex justify-content-center align-items-center gap-2" 
+                        style="background-color: #28a745; transition: all 0.2s;"
+                        [disabled]="depositAmount < 1"
+                        (click)="generatePix()">
+                  <i class="bi bi-qr-code-scan"></i> Gerar PIX
+                </button>
+              </div>
+            </div>
+
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden" style="border-top: 6px solid #28a745 !important;" *ngIf="pixGenerated">
+              <div class="card-body p-4 p-md-5 text-center">
+                <h4 class="fw-bold text-dark mb-1">PIX Gerado!</h4>
+                <p class="text-muted small mb-4">Escaneie o QR Code ou copie o código abaixo para pagar <strong>{{ depositAmount | currency:'BRL' }}</strong>.</p>
                 
-                <div class="d-flex gap-2">
-                  <button class="btn btn-outline-success flex-fill py-2 fw-bold rounded-3" (click)="setDepositAmount(20)">R$ 20</button>
-                  <button class="btn btn-outline-success flex-fill py-2 fw-bold rounded-3" (click)="setDepositAmount(50)">R$ 50</button>
-                  <button class="btn btn-outline-success flex-fill py-2 fw-bold rounded-3" (click)="setDepositAmount(100)">R$ 100</button>
+                <div class="bg-light p-3 rounded-4 mb-4 mx-auto d-flex align-items-center justify-content-center" style="width: 200px; height: 200px; border: 2px dashed #ccc;">
+                  <i class="bi bi-qr-code text-muted opacity-25" style="font-size: 8rem; line-height: 1;"></i>
                 </div>
-              </div>
 
-              <button class="btn w-100 text-white fw-bold py-3 rounded-3 shadow-sm mb-3 d-flex justify-content-center align-items-center gap-2" 
-                      style="background-color: #28a745; transition: all 0.2s;"
-                      [disabled]="depositAmount < 1"
-                      (click)="generatePix()">
-                <i class="bi bi-qr-code-scan"></i> Gerar PIX
-              </button>
-              <small class="text-muted d-block mt-3"><i class="bi bi-shield-lock me-1 text-success"></i> Ambiente seguro e protegido.</small>
+                <div class="text-start mb-4">
+                  <label class="small fw-bold text-muted mb-2 text-uppercase">Pix Copia e Cola</label>
+                  <div class="input-group mb-3 shadow-sm rounded-3">
+                    <input type="text" class="form-control bg-light text-muted border-success border-opacity-25" [value]="pixCode" readonly>
+                    <button class="btn btn-success px-4" type="button" (click)="copyPix()" title="Copiar Código"><i class="bi bi-copy"></i></button>
+                  </div>
+                </div>
+
+                <button class="btn w-100 text-white fw-bold py-3 rounded-3 shadow-sm mb-3 d-flex justify-content-center align-items-center gap-2" style="background-color: #28a745;" (click)="simulatePayment()">
+                  <i class="bi bi-check-circle-fill"></i> Simular Pagamento Realizado
+                </button>
+                
+                <button class="btn btn-link text-muted text-decoration-none w-100 small" (click)="pixGenerated = false">Cancelar e voltar</button>
+              </div>
             </div>
           </div>
 
-          <div class="card border-0 shadow-sm rounded-4 overflow-hidden" style="border-top: 6px solid #28a745 !important;" *ngIf="pixGenerated">
-            <div class="card-body p-4 p-md-5 text-center">
-              <h4 class="fw-bold text-dark mb-1">PIX Gerado!</h4>
-              <p class="text-muted small mb-4">Escaneie o QR Code ou copie o código abaixo para pagar <strong>{{ depositAmount | currency:'BRL' }}</strong>.</p>
-              
-              <div class="bg-light p-3 rounded-4 mb-4 mx-auto d-flex align-items-center justify-content-center" style="width: 200px; height: 200px; border: 2px dashed #ccc;">
-                <i class="bi bi-qr-code text-muted opacity-25" style="font-size: 8rem; line-height: 1;"></i>
-              </div>
-
-              <div class="text-start mb-4">
-                <label class="small fw-bold text-muted mb-2 text-uppercase">Pix Copia e Cola</label>
-                <div class="input-group mb-3 shadow-sm rounded-3">
-                  <input type="text" class="form-control bg-light text-muted border-success border-opacity-25" [value]="pixCode" readonly>
-                  <button class="btn btn-success px-4" type="button" (click)="copyPix()" title="Copiar Código"><i class="bi bi-copy"></i></button>
+          <div *ngIf="financeAction === 'withdraw'">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden" style="border-top: 6px solid #D95360 !important;">
+              <div class="card-body p-4 p-md-5 text-center">
+                <div class="mb-4">
+                  <div class="rounded-circle bg-danger bg-opacity-10 d-inline-flex justify-content-center align-items-center mb-3" style="width: 80px; height: 80px;">
+                    <i class="bi bi-cash-stack text-danger" style="font-size: 2.5rem;"></i>
+                  </div>
+                  <h3 class="fw-bold text-dark">Sacar Fundos</h3>
+                  <p class="text-muted small">Transfira o seu saldo disponível diretamente para a sua conta via PIX.</p>
                 </div>
-              </div>
 
-              <button class="btn w-100 text-white fw-bold py-3 rounded-3 shadow-sm mb-3 d-flex justify-content-center align-items-center gap-2" style="background-color: #28a745;" (click)="simulatePayment()">
-                <i class="bi bi-check-circle-fill"></i> Simular Pagamento Realizado
-              </button>
-              
-              <button class="btn btn-link text-muted text-decoration-none w-100 small" (click)="pixGenerated = false">Cancelar e voltar</button>
+                <div class="text-start mb-4">
+                  <div class="bg-light p-3 rounded-3 border mb-3 d-flex justify-content-between align-items-center">
+                    <span class="text-muted fw-bold small">Saldo Disponível:</span>
+                    <strong class="fs-5 text-dark">{{ userProfile?.balance | currency:'BRL' }}</strong>
+                  </div>
+
+                  <label class="small fw-bold text-muted mb-2 text-uppercase">Valor do Saque</label>
+                  <div class="input-group input-group-lg mb-3 shadow-sm rounded-3 overflow-hidden border">
+                    <span class="input-group-text bg-white border-0 text-secondary">R$</span>
+                    <input type="number" class="form-control border-0 ps-0 fw-bold text-dark" [(ngModel)]="withdrawAmount" placeholder="0,00">
+                  </div>
+                  
+                  <div class="d-flex gap-2 mb-4">
+                    <button class="btn btn-outline-danger flex-fill py-1 fw-bold rounded-3 small" (click)="setWithdrawAmount(50)">R$ 50</button>
+                    <button class="btn btn-outline-danger flex-fill py-1 fw-bold rounded-3 small" (click)="setWithdrawAmount(100)">R$ 100</button>
+                    <button class="btn btn-outline-danger flex-fill py-1 fw-bold rounded-3 small" (click)="setWithdrawAmount(userProfile?.balance || 0)">Total</button>
+                  </div>
+
+                  <label class="small fw-bold text-muted mb-2 text-uppercase">Sua Chave PIX</label>
+                  <input type="text" class="form-control form-control-lg bg-light border rounded-3 mb-2" [(ngModel)]="withdrawPixKey" placeholder="CPF, E-mail, Telefone...">
+                  <small class="text-muted" style="font-size: 0.7rem;"><i class="bi bi-info-circle me-1"></i> A chave deve estar no mesmo nome do titular da conta.</small>
+                </div>
+
+                <button class="btn w-100 text-white fw-bold py-3 rounded-3 shadow-sm mb-2 d-flex justify-content-center align-items-center gap-2" 
+                        style="background-color: #D95360; transition: all 0.2s;"
+                        [disabled]="withdrawAmount < 1 || !withdrawPixKey"
+                        (click)="requestWithdraw()">
+                  <i class="bi bi-send-check"></i> Solicitar Saque
+                </button>
+              </div>
             </div>
           </div>
 

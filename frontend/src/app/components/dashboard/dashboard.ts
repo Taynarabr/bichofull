@@ -21,11 +21,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   draws: Draw[] = [];
   userBets: any[] = []; 
   isLoading = true;
-  
   autoRefreshSub?: Subscription; 
-
   activeTab: string = 'jogo';
-
   betType: string = 'GRUPO'; 
   selectedAmount: number = 0;
   selectedAnimal: Animal | null = null;
@@ -64,9 +61,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
     { nome: 'COR', hora: '21:00', realizado: false }
   ];
 
+  // ==========================================
+  // VARIÁVEIS DO FINANCEIRO
+  // ==========================================
+  financeAction: 'deposit' | 'withdraw' = 'deposit';
   depositAmount: number = 0;
   pixGenerated: boolean = false;
   pixCode: string = '00020126580014br.gov.bcb.pix0136pix@jogodobicho.com.br0203Pix520400005303986540510.005802BR5909SAO PAULO6009JOGO BIXO6207050300063041D3D';
+  withdrawAmount: number = 0;
+  withdrawPixKey: string = '';
   
   // ==========================================
   // VARIÁVEIS DO PERFIL
@@ -105,7 +108,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.listarSorteios();
       this.carregarApostas(Number(idLogado));
       this.atualizarStatusSorteios(); 
-      
       this.iniciarAutoRefresh(Number(idLogado)); 
     } else {
       this.router.navigate(['/login']);
@@ -130,7 +132,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   atualizarStatusSorteios() {
     const agora = new Date();
     const horaAtual = agora.getHours().toString().padStart(2, '0') + ":" + agora.getMinutes().toString().padStart(2, '0');
-    
     this.sorteiosDoDia.forEach(s => {
       s.realizado = horaAtual >= s.hora;
     });
@@ -138,12 +139,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   calcularEstatisticas() {
     if (!this.userBets || this.userBets.length === 0) return;
-
     const apostasGanhas = this.userBets.filter(bet => bet.status === 'GANHOU');
-
     this.estatisticas.vitoriasTotais = apostasGanhas.length;
     this.estatisticas.totalGanhos = apostasGanhas.reduce((acumulador, aposta) => acumulador + (aposta.prize || 0), 0);
-    
     if (apostasGanhas.length > 0) {
       this.estatisticas.maiorPremio = Math.max(...apostasGanhas.map(aposta => aposta.prize || 0));
     }
@@ -151,7 +149,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   getUserData(id: number, silent: boolean = false) {
     if (!silent) this.isLoading = true; 
-    
     this.userService.getUserById(id).subscribe({
       next: (data) => {
         this.userProfile = data;
@@ -159,7 +156,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.cdr.detectChanges(); 
       },
       error: (err) => {
-        console.error('Erro ao buscar dados:', err);
         if (!silent) this.isLoading = false;
         this.cdr.detectChanges();
       }
@@ -187,7 +183,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   confirmBet() {
     if (!this.userProfile || !this.isBetValid()) return;
-
     this.isLoading = true; 
     const betRequest = {
       type: this.betType,
@@ -204,7 +199,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
           icon: 'success',
           confirmButtonColor: '#D95360'
         });
-
         this.getUserData(this.userProfile!.id, true); 
         this.carregarApostas(this.userProfile!.id); 
         this.selectedAmount = 0;
@@ -219,7 +213,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
           icon: 'error',
           confirmButtonColor: '#D95360'
         });
-
         this.isLoading = false; 
         this.cdr.detectChanges();
       }
@@ -265,7 +258,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   getPotencialGanho(): number {
     const amount = Number(this.selectedAmount) || 0;
     if (amount <= 0) return 0;
-
     switch (this.betType) {
       case 'GRUPO': return amount * 18;
       case 'DEZENA': return amount * 60;
@@ -274,6 +266,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
+  // ==========================================
+  // FUNÇÕES DO FINANCEIRO (DEPÓSITO E SAQUE)
+  // ==========================================
   setDepositAmount(amount: number) {
     this.depositAmount = amount;
     this.pixGenerated = false; 
@@ -281,12 +276,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   generatePix() {
     if (this.depositAmount < 1) {
-      Swal.fire({
-        title: 'Atenção',
-        text: 'O valor mínimo de depósito é R$ 1,00.',
-        icon: 'warning',
-        confirmButtonColor: '#28a745'
-      });
+      Swal.fire({ title: 'Atenção', text: 'O valor mínimo de depósito é R$ 1,00.', icon: 'warning', confirmButtonColor: '#28a745' });
       return;
     }
     this.pixGenerated = true;
@@ -305,47 +295,63 @@ export class DashboardComponent implements OnInit, OnDestroy {
           toast.addEventListener('mouseleave', Swal.resumeTimer)
         }
       });
-
-      Toast.fire({
-        icon: 'success',
-        title: 'Código PIX copiado!'
-      });
+      Toast.fire({ icon: 'success', title: 'Código PIX copiado!' });
     });
   }
 
   simulatePayment() {
     if (!this.userProfile) return;
-
     this.isLoading = true; 
-
     this.userService.deposit(this.userProfile.id, this.depositAmount).subscribe({
       next: (updatedUser) => {
         this.userProfile = updatedUser;
-        
-        Swal.fire({
-          title: 'Pagamento Aprovado!',
-          html: `Seu depósito de <strong>R$ ${this.depositAmount.toFixed(2)}</strong> caiu na conta.`,
-          icon: 'success',
-          confirmButtonText: 'Ver Saldo',
-          confirmButtonColor: '#28a745'
-        });
-        
+        Swal.fire({ title: 'Pagamento Aprovado!', html: `Seu depósito de <strong>R$ ${this.depositAmount.toFixed(2)}</strong> caiu na conta.`, icon: 'success', confirmButtonColor: '#28a745' });
         this.depositAmount = 0;
         this.pixGenerated = false;
         this.activeTab = 'jogo';
-        
         this.isLoading = false; 
         this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error('Erro ao fazer depósito:', err);
-        Swal.fire({
-          title: 'Falha no Pagamento',
-          text: 'Não conseguimos conectar com o banco. Tente novamente.',
-          icon: 'error',
-          confirmButtonColor: '#D95360'
-        });
+        Swal.fire({ title: 'Falha no Pagamento', text: 'Não conseguimos conectar com o banco. Tente novamente.', icon: 'error', confirmButtonColor: '#D95360' });
         this.isLoading = false; 
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  setWithdrawAmount(amount: number) {
+    this.withdrawAmount = amount;
+  }
+
+  requestWithdraw() {
+    if (this.withdrawAmount < 1) {
+      Swal.fire({ title: 'Atenção', text: 'O valor mínimo de saque é R$ 1,00.', icon: 'warning', confirmButtonColor: '#D95360' });
+      return;
+    }
+    if (this.userProfile && this.withdrawAmount > this.userProfile.balance) {
+      Swal.fire({ title: 'Atenção', text: 'Saldo insuficiente.', icon: 'error', confirmButtonColor: '#D95360' });
+      return;
+    }
+    if (!this.withdrawPixKey || this.withdrawPixKey.trim() === '') {
+      Swal.fire({ title: 'Atenção', text: 'Informe a chave PIX.', icon: 'warning', confirmButtonColor: '#D95360' });
+      return;
+    }
+
+    this.isLoading = true;
+    this.userService.withdraw(this.userProfile!.id, this.withdrawAmount).subscribe({
+      next: (updatedUser) => {
+        this.userProfile = updatedUser;
+        Swal.fire({ title: 'Saque Realizado!', html: `Transferência de <strong>R$ ${this.withdrawAmount.toFixed(2)}</strong> enviada para sua chave PIX.`, icon: 'success', confirmButtonColor: '#28a745' });
+        this.withdrawAmount = 0;
+        this.withdrawPixKey = '';
+        this.activeTab = 'jogo';
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        Swal.fire({ title: 'Falha no Saque', text: err.error?.message || 'Erro ao processar saque.', icon: 'error', confirmButtonColor: '#D95360' });
+        this.isLoading = false;
         this.cdr.detectChanges();
       }
     });
@@ -358,7 +364,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (this.userProfile) {
       this.editProfileData.name = this.userProfile.name;
       this.editProfileData.email = this.userProfile.email;
-      this.editProfileData.password = ''; // Deixamos a senha em branco por segurança
+      this.editProfileData.password = ''; 
       this.activeTab = 'perfil';
     }
   }
@@ -366,43 +372,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
   saveProfile() {
     if (!this.userProfile) return;
     this.isLoading = true;
-    
-    // Mandamos apenas Nome e E-mail por padrão
     const payload: any = {
       name: this.editProfileData.name,
       email: this.editProfileData.email
     };
-
-    // Só adicionamos a senha no pacote se o usuário de fato digitou alguma coisa
     if (this.editProfileData.password && this.editProfileData.password.trim() !== '') {
       payload.password = this.editProfileData.password;
     }
-
     this.userService.updateUser(this.userProfile.id, payload).subscribe({
       next: (res) => {
         this.isLoading = false;
         this.userProfile = res;
         this.editProfileData.password = ''; 
         this.cdr.detectChanges(); 
-
-        Swal.fire({
-          title: 'Sucesso!',
-          text: 'Seus dados foram atualizados.',
-          icon: 'success',
-          confirmButtonColor: '#D95360'
-        });
+        Swal.fire({ title: 'Sucesso!', text: 'Seus dados foram atualizados.', icon: 'success', confirmButtonColor: '#D95360' });
       },
       error: (err) => {
         this.isLoading = false;
         this.cdr.detectChanges(); 
-
-        console.error('Erro detalhado:', err);
-        Swal.fire({
-          title: 'Ops!',
-          text: err.error?.message || 'Erro ao atualizar o perfil. Verifique se o e-mail já existe.',
-          icon: 'error',
-          confirmButtonColor: '#D95360'
-        });
+        Swal.fire({ title: 'Ops!', text: err.error?.message || 'Erro ao atualizar o perfil.', icon: 'error', confirmButtonColor: '#D95360' });
       }
     });
   }

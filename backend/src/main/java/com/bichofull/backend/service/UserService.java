@@ -57,7 +57,7 @@ public class UserService {
     
     public void debitBalance(Long userId, BigDecimal amount) {
         User user = findUserById(userId);
-        user.debitarSaldo(amount); // Método de negócio dentro da entidade User
+        user.debitarSaldo(amount);
         userRepository.save(user);
     }
     
@@ -135,7 +135,7 @@ public class UserService {
     }
 
     // ==========================================
-    // MÉTODO PARA PROCESSAR O DEPÓSITO PIX
+    // DEPÓSITO PIX
     // ==========================================
     public UserResponseDTO deposit(Long userId, BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
@@ -143,9 +143,29 @@ public class UserService {
         }
         
         User user = findUserById(userId);
-        user.creditarSaldo(amount); // Chama o método seguro da sua Entidade
-        User savedUser = userRepository.save(user); // Salva de fato no banco de dados
+        user.creditarSaldo(amount); 
+        User savedUser = userRepository.save(user); 
         
-        return toDTO(savedUser); // Retorna o usuário com o saldo atualizado para o frontend
+        return toDTO(savedUser); 
+    }
+
+    // ==========================================
+    // SAQUE PIX
+    // ==========================================
+    public UserResponseDTO withdraw(Long userId, BigDecimal amount) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("O valor do saque deve ser maior que zero.");
+        }
+        
+        User user = findUserById(userId);
+        
+        if (!user.temSaldoSuficiente(amount)) {
+            throw new RuntimeException("Saldo insuficiente para realizar este saque.");
+        }
+        
+        user.debitarSaldo(amount); 
+        User savedUser = userRepository.save(user); 
+        
+        return toDTO(savedUser); 
     }
 }

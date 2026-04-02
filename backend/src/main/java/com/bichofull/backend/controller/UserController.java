@@ -68,11 +68,17 @@ public class UserController {
     }
 
     // ==========================================
-    // NOVA ROTA: DEPÓSITO (PIX)
+    // FINANCEIRO (DEPÓSITO E SAQUE)
     // ==========================================
     @PostMapping("/{id}/deposit")
     public ResponseEntity<UserResponseDTO> deposit(@PathVariable Long id, @RequestParam BigDecimal amount) {
         UserResponseDTO updatedUser = userService.deposit(id, amount);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @PostMapping("/{id}/withdraw")
+    public ResponseEntity<UserResponseDTO> withdraw(@PathVariable Long id, @RequestParam BigDecimal amount) {
+        UserResponseDTO updatedUser = userService.withdraw(id, amount);
         return ResponseEntity.ok(updatedUser);
     }
 }
