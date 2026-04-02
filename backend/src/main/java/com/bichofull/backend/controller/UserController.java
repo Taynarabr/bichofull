@@ -67,9 +67,6 @@ public class UserController {
         return ResponseEntity.ok(balance);
     }
 
-    // ==========================================
-    // FINANCEIRO (DEPÓSITO E SAQUE)
-    // ==========================================
     @PostMapping("/{id}/deposit")
     public ResponseEntity<UserResponseDTO> deposit(@PathVariable Long id, @RequestParam BigDecimal amount) {
         UserResponseDTO updatedUser = userService.deposit(id, amount);
