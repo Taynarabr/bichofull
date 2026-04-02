@@ -5,7 +5,6 @@ import { CommonModule, registerLocaleData } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http'; 
 import localePt from '@angular/common/locales/pt';
 
-// Registro do idioma português para o Pipe de Moeda (Currency)
 registerLocaleData(localePt);
 
 import { AppRoutingModule } from './app-routing-module';
@@ -14,6 +13,10 @@ import { LoginComponent } from './components/login/login';
 import { RegisterComponent } from './components/register/register';
 import { DashboardComponent } from './components/dashboard/dashboard';
 import { AnimalCardComponent } from './components/animal-card/animal-card';
+
+import { UserService } from './services/user.service';
+import { DrawService } from './services/draw.service';
+import { BetService } from './services/bet.service';
 
 @NgModule({
   declarations: [
@@ -31,7 +34,10 @@ import { AnimalCardComponent } from './components/animal-card/animal-card';
     HttpClientModule  
   ],
   providers: [
-    { provide: LOCALE_ID, useValue: 'pt-BR' } // Define o formato brasileiro (R$)
+    { provide: LOCALE_ID, useValue: 'pt-BR' },
+    UserService,
+    DrawService,
+    BetService
   ],
   bootstrap: [AppComponent]
 })

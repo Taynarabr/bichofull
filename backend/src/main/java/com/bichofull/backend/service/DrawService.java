@@ -2,7 +2,11 @@ package com.bichofull.backend.service;
 
 import com.bichofull.backend.dto.DrawDTO;
 import com.bichofull.backend.model.Draw;
+import com.bichofull.backend.model.Bet;
+import com.bichofull.backend.model.Bet.BetStatus;
 import com.bichofull.backend.repository.DrawRepository;
+import com.bichofull.backend.repository.BetRepository;
+import com.bichofull.backend.repository.UserRepository;
 import com.bichofull.backend.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,13 +20,18 @@ import java.util.stream.Collectors;
 public class DrawService {
     
     private final DrawRepository drawRepository;
+    private final BetRepository betRepository;
+    private final UserRepository userRepository;
     private final Random random = new Random();
     
-    public DrawService(DrawRepository drawRepository) {
+    public DrawService(DrawRepository drawRepository, BetRepository betRepository, UserRepository userRepository) {
         this.drawRepository = drawRepository;
+        this.betRepository = betRepository;
+        this.userRepository = userRepository;
     }
     
     public DrawDTO generateDraw() {
+        // 1. Gera o sorteio base
         Draw draw = new Draw(
             generateRandomMilhar(),
             generateRandomMilhar(),
@@ -30,8 +39,18 @@ public class DrawService {
             generateRandomMilhar(),
             generateRandomMilhar()
         );
-        
+       
         Draw savedDraw = drawRepository.save(draw);
+
+        List<Bet> pendingBets = betRepository.findByStatus(BetStatus.PENDENTE);
+        
+        for (Bet bet : pendingBets) {
+            bet.processResult(savedDraw); 
+            betRepository.save(bet);
+            // Salva o usuário para garantir que o saldo creditado persista
+            userRepository.save(bet.getUser()); 
+        }
+        
         return toDTO(savedDraw);
     }
     
