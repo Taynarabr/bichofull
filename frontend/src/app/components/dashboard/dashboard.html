@@ -1,69 +1,96 @@
-<div class="container-fluid py-4" style="background-color: #f4f6f9; min-height: 100vh;">
+<div class="container-fluid py-0 px-0 py-md-4 px-md-3" style="background-color: #f8f9fa; min-height: 100vh;">
 
   <div class="text-center py-5" *ngIf="isLoading">
-    <div class="spinner-border text-success" style="width: 3rem; height: 3rem;" role="status">
+    <div class="spinner-border text-danger" style="width: 3rem; height: 3rem;" role="status">
       <span class="visually-hidden">Carregando...</span>
     </div>
-    <h5 class="mt-3 text-muted">Buscando seus dados...</h5>
+    <h5 class="mt-3 text-muted fw-light">Buscando seus dados...</h5>
   </div>
 
-  <div *ngIf="!isLoading && userProfile">
+  <div *ngIf="!isLoading && userProfile" class="container-fluid px-0 px-md-2">
 
-    <div class="d-flex justify-content-between align-items-center mb-4 bg-white p-3 rounded shadow-sm">
-      <h4 class="mb-0 fw-bold d-flex align-items-center gap-2" style="color: #0A5A30;">
-        <i class="bi bi-box-fill"></i> BichoFull
-        <span class="badge rounded-pill" [ngClass]="userProfile?.role === 'ADMIN' ? 'bg-primary' : 'bg-secondary'" style="font-size: 0.4em;">
-          {{ userProfile?.role === 'ADMIN' ? 'ADMIN' : 'JOGADOR' }}
-        </span>
-      </h4>
+    <div class="d-flex flex-wrap justify-content-between align-items-center bg-white p-3 px-md-4 shadow-sm rounded-0 rounded-md-4 mb-0" style="border-bottom: 1px solid #eee;">
       
-      <div class="d-flex align-items-center gap-3">
-        <span class="text-muted small">SALDO ATUAL</span>
-        <strong class="fs-5" style="color: #0A5A30;">
-          {{ userProfile?.balance | currency:'BRL' }}
-        </strong>
-        <button class="btn btn-warning fw-bold px-4 rounded-pill">Depositar</button>
-        <button class="btn btn-outline-danger fw-bold px-3 rounded-pill" (click)="logout()">
-          <i class="bi bi-box-arrow-right"></i> Sair
+      <h4 class="mb-0 fw-bold d-flex align-items-center gap-2" style="color: #D95360;">
+        <i class="bi bi-diamond-fill"></i> <span class="d-none d-sm-inline">Jogo do Bicho</span>
+      </h4>
+
+      <div class="text-center mx-auto mx-sm-0 my-2 my-sm-0" *ngIf="userProfile?.role !== 'ADMIN'">
+        <small class="text-muted d-block fw-bold" style="font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase;">Saldo Atual</small>
+        <strong class="fs-4 fs-md-5" style="color: #D95360;">{{ userProfile?.balance | currency:'BRL' }}</strong>
+      </div>
+      
+      <div class="d-flex align-items-center gap-2 gap-md-3">
+        
+        <div class="position-relative" style="cursor: pointer;" title="Notificações">
+          <i class="bi bi-bell text-muted fs-5"></i>
+          <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+        </div>
+        
+        <div class="rounded-circle bg-light d-flex justify-content-center align-items-center border shadow-sm ms-2" style="width: 38px; height: 38px; cursor: pointer;" title="Meu Perfil">
+           <i class="bi bi-person text-secondary fs-5"></i>
+        </div>
+
+        <button class="btn btn-light text-danger rounded-circle d-flex justify-content-center align-items-center border shadow-sm" style="width: 38px; height: 38px; transition: all 0.2s;" (click)="logout()" title="Sair da Conta" onmouseover="this.classList.add('bg-danger', 'text-white')" onmouseout="this.classList.remove('bg-danger', 'text-white')">
+          <i class="bi bi-box-arrow-right fs-5"></i>
         </button>
       </div>
     </div>
 
-    <div *ngIf="userProfile?.role === 'ADMIN'">
-      <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body d-flex justify-content-between align-items-center">
-          <h5 class="fw-bold mb-0">Painel de Controle de Sorteios</h5>
-          <button class="btn btn-danger fw-bold px-4 py-2 rounded-pill" (click)="gerarSorteio()">
-            <i class="bi bi-plus-circle-fill"></i> Gerar Novo Sorteio Agora
+    <div class="d-flex justify-content-start justify-content-sm-center gap-3 gap-md-5 py-2 bg-white shadow-sm mb-4 overflow-auto flex-nowrap px-3 px-md-0 w-100" style="border-bottom: 2px solid #f8f9fa;">
+      <span class="fw-bold py-2 px-2 text-nowrap" style="color: #D95360; border-bottom: 3px solid #D95360; cursor: pointer;">
+        <i class="bi bi-house me-1"></i> Jogo
+      </span>
+      <span class="text-muted py-2 px-2 text-nowrap" style="cursor: pointer;" *ngIf="userProfile?.role === 'ADMIN'">
+        <i class="bi bi-gear me-1"></i> Gerenciar Sorteios
+      </span>
+      <span class="text-muted py-2 px-2 text-nowrap" style="cursor: pointer;">
+        <i class="bi bi-trophy me-1"></i> Resultados
+      </span>
+      <span class="text-muted py-2 px-2 text-nowrap" style="cursor: pointer;" *ngIf="userProfile?.role !== 'ADMIN'">
+        <i class="bi bi-clock-history me-1"></i> Histórico
+      </span>
+    </div>
+
+
+    <div *ngIf="userProfile?.role === 'ADMIN'" class="px-3 px-md-0">
+      <div class="card border-0 shadow-sm mb-4 rounded-4 overflow-hidden">
+        <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-md-center bg-white p-4 gap-3">
+          <div>
+            <h5 class="fw-bold mb-1">Painel de Controle</h5>
+            <p class="text-muted small mb-0">Gerencie os resultados oficiais do sistema.</p>
+          </div>
+          <button class="btn text-white fw-bold px-4 py-3 py-md-2 rounded-pill shadow w-100 w-md-auto" style="background-color: #D95360; border: none;" (click)="gerarSorteio()">
+            <i class="bi bi-dice-5-fill me-2"></i> Gerar Novo Sorteio
           </button>
         </div>
       </div>
 
-      <div class="card border-0 shadow-sm">
-        <div class="card-header bg-white py-3">
-          <h6 class="fw-bold mb-0">Histórico de Sorteios Armazenados</h6>
+      <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-header bg-white py-3 border-0">
+          <h6 class="fw-bold mb-0 text-secondary">Histórico de Sorteios</h6>
         </div>
         <div class="card-body p-0">
           <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-              <thead class="bg-light">
+            <table class="table table-hover align-middle mb-0 text-nowrap">
+              <thead class="table-light">
                 <tr>
-                  <th class="px-4">Data e Hora</th>
-                  <th>1º Prêmio</th>
-                  <th>2º Prêmio</th>
-                  <th>3º Prêmio</th>
-                  <th>4º Prêmio</th>
-                  <th>5º Prêmio</th>
+                  <th class="px-4 border-0">Data e Hora</th>
+                  <th class="border-0">1º Prêmio</th>
+                  <th class="border-0">2º Prêmio</th>
+                  <th class="border-0">3º Prêmio</th>
+                  <th class="border-0">4º Prêmio</th>
+                  <th class="border-0">5º Prêmio</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let d of draws">
-                  <td class="px-4 fw-bold text-muted">{{ d.drawDate }}</td>
-                  <td><span class="badge bg-success fs-6">{{ d.milhar_1 }}</span></td>
-                  <td>{{ d.milhar_2 }}</td>
-                  <td>{{ d.milhar_3 }}</td>
-                  <td>{{ d.milhar_4 }}</td>
-                  <td>{{ d.milhar_5 }}</td>
+                  <td class="px-4 text-muted small">{{ d.drawDate }}</td>
+                  <td><span class="badge rounded-pill px-3 py-2 fs-6 shadow-sm text-white" style="background-color: #D95360 !important;">{{ d.milhar_1 }}</span></td>
+                  <td class="fw-bold text-secondary">{{ d.milhar_2 }}</td>
+                  <td class="fw-bold text-secondary">{{ d.milhar_3 }}</td>
+                  <td class="fw-bold text-secondary">{{ d.milhar_4 }}</td>
+                  <td class="fw-bold text-secondary">{{ d.milhar_5 }}</td>
                 </tr>
               </tbody>
             </table>
@@ -72,14 +99,23 @@
       </div>
     </div>
 
-    <div *ngIf="userProfile?.role !== 'ADMIN'">
+    <div *ngIf="userProfile?.role !== 'ADMIN'" class="px-3 px-md-0">
       
-      <div class="row g-4">
+      <div class="card border-0 shadow-sm mb-4 rounded-4" style="background: linear-gradient(to right, #fff, #fff9f9);">
+        <div class="card-body p-3 p-md-4 d-flex justify-content-between align-items-center">
+          <div>
+            <span class="badge bg-danger-subtle text-danger rounded-pill px-3 mb-2">Diário Especial</span>
+            <h4 class="fw-bold text-dark font-serif mb-1">Faça sua Fé!</h4>
+            <p class="text-muted mb-0 small">Escolha um bicho e defina o valor da sua aposta.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4 flex-column-reverse flex-lg-row">
         
         <div class="col-12 col-lg-8">
-          <h5 class="fw-bold mb-3">Escolha seu Bicho</h5>
-          <div class="row g-3">
-            <div class="col-4 col-md-3 col-xl-2" *ngFor="let item of animalsList">
+          <div class="row g-2 g-md-3">
+            <div class="col-6 col-sm-4 col-md-3 col-xl-2" *ngFor="let item of animalsList">
               <app-animal-card 
                 [animalData]="item" 
                 [isSelected]="selectedAnimal?.group === item.group"
@@ -90,30 +126,31 @@
         </div>
 
         <div class="col-12 col-lg-4">
-          <div class="card border-0 shadow-sm">
-            <div class="card-body p-4">
-              <h5 class="fw-bold mb-4">Fazer Aposta</h5>
+          <div class="card border-0 shadow-sm rounded-4 sticky-md-top" style="top: 20px;">
+            <div class="card-body p-3 p-md-4 text-center">
               
-              <label class="small text-muted">TIPO DE JOGO</label>
-              <select class="form-select mb-3" [(ngModel)]="betType">
-                <option value="GRUPO">Grupo (Animal)</option>
-                <option value="DEZENA">Dezena</option>
-                <option value="MILHAR">Milhar</option>
-              </select>
-              
-              <div class="mb-3" *ngIf="betType !== 'GRUPO'">
-                <label class="small text-muted">DIGITE O NÚMERO ({{betType === 'DEZENA' ? '2 dígitos' : '4 dígitos'}})</label>
-                <input type="text" class="form-control" [(ngModel)]="betNumber" placeholder="Ex: {{betType === 'DEZENA' ? '24' : '1234'}}">
+              <div class="text-start">
+                <label class="small fw-bold text-muted mb-1">TIPO DE JOGO</label>
+                <select class="form-select form-select-lg mb-3 rounded-3" [(ngModel)]="betType">
+                  <option value="GRUPO">Grupo (Animal)</option>
+                  <option value="DEZENA">Dezena</option>
+                  <option value="MILHAR">Milhar</option>
+                </select>
+                
+                <div class="mb-3" *ngIf="betType !== 'GRUPO'">
+                  <label class="small fw-bold text-muted mb-1 text-uppercase">Número ({{betType === 'DEZENA' ? '2' : '4'}} dígitos)</label>
+                  <input type="text" class="form-control form-control-lg rounded-3 fw-bold text-center" maxlength="{{betType === 'DEZENA' ? 2 : 4}}" [(ngModel)]="betNumber" placeholder="----">
+                </div>
+
+                <label class="small fw-bold text-muted mb-1">VALOR</label>
+                <div class="input-group input-group-lg mb-4">
+                  <span class="input-group-text bg-light border-end-0">R$</span>
+                  <input type="number" class="form-control bg-light border-start-0 ps-0 fw-bold rounded-end-3" [(ngModel)]="selectedAmount" placeholder="0,00">
+                </div>
               </div>
 
-              <label class="small text-muted">VALOR DA APOSTA</label>
-              <div class="input-group mb-4">
-                <span class="input-group-text bg-white">R$</span>
-                <input type="number" class="form-control" [(ngModel)]="selectedAmount" placeholder="Valor">
-              </div>
-
-              <button class="btn w-100 text-white fw-bold py-2 shadow-sm" 
-                      [style.background-color]="isBetValid() ? '#0A5A30' : '#ccc'"
+              <button class="btn btn-lg w-100 text-white fw-bold py-3 rounded-pill shadow transition-all" 
+                      [style.background-color]="isBetValid() ? '#D95360' : '#e0e0e0'"
                       [disabled]="!isBetValid()"
                       (click)="confirmBet()">
                 Confirmar Aposta
@@ -123,43 +160,49 @@
         </div>
       </div>
 
-      <div class="card border-0 shadow-sm mt-4">
-        <div class="card-header bg-white py-3">
-          <h6 class="fw-bold mb-0">Minhas Apostas Recentes</h6>
+      <div class="card border-0 shadow-sm mt-5 mb-5 rounded-4 overflow-hidden">
+        <div class="card-header bg-white py-3 border-0">
+          <h6 class="fw-bold mb-0 text-secondary">Minhas Apostas Recentes</h6>
         </div>
         <div class="card-body p-0">
           <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-              <thead class="bg-light">
+            <table class="table table-hover align-middle mb-0 text-nowrap">
+              <thead class="table-light">
                 <tr>
-                  <th class="px-4">Tipo</th>
-                  <th>Escolha</th>
-                  <th>Valor</th>
-                  <th>Status</th>
-                  <th>Prêmio</th>
+                  <th class="px-4 border-0">Tipo</th>
+                  <th class="border-0">Escolha</th>
+                  <th class="border-0">Valor</th>
+                  <th class="border-0">Status</th>
+                  <th class="border-0">Prêmio</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let bet of userBets">
-                  <td class="px-4"><span class="badge bg-light text-dark border">{{ bet.type }}</span></td>
-                  <td class="fw-bold">{{ bet.choice }} {{ bet.animalName ? '(' + bet.animalName + ')' : '' }}</td>
-                  <td>{{ bet.value | currency:'BRL' }}</td>
+                  <td class="px-4"><span class="badge rounded-pill bg-light text-muted border px-3 py-2">{{ bet.type }}</span></td>
+                  <td class="fw-bold fs-6">{{ bet.choice }} <small class="text-muted fw-normal">{{ bet.animalName ? '(' + bet.animalName + ')' : '' }}</small></td>
+                  <td class="fw-bold">{{ bet.value | currency:'BRL' }}</td>
                   <td>
-                    <span class="badge" 
-                      [ngClass]="{'bg-warning': bet.status === 'PENDENTE', 'bg-success text-white': bet.status === 'GANHOU', 'bg-danger text-white': bet.status === 'PERDEU'}">
+                    <span class="badge rounded-pill px-3 py-2 fw-bold" 
+                      [ngClass]="{
+                        'bg-warning-subtle text-warning border border-warning': bet.status === 'PENDENTE', 
+                        'bg-success-subtle text-success border border-success': bet.status === 'GANHOU', 
+                        'bg-danger-subtle text-danger border border-danger': bet.status === 'PERDEU'
+                      }">
                       {{ bet.status }}
                     </span>
                   </td>
                   <td class="text-success fw-bold">{{ bet.prize > 0 ? (bet.prize | currency:'BRL') : '-' }}</td>
                 </tr>
-                <tr *ngIf="!userBets || userBets.length === 0">
-                  <td colspan="5" class="text-center py-4 text-muted">Você ainda não realizou nenhuma aposta.</td>
-                </tr>
               </tbody>
             </table>
           </div>
+          <div *ngIf="!userBets || userBets.length === 0" class="text-center py-5">
+            <i class="bi bi-inbox text-muted fs-1 opacity-25"></i>
+            <p class="text-muted mt-2">Você ainda não realizou nenhuma aposta hoje.</p>
+          </div>
         </div>
       </div>
-      </div>
+    </div>
+
   </div> 
 </div>

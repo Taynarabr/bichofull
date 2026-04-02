@@ -1,30 +1,85 @@
+/* No seu dashboard.css */
+
 .animal-card {
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  border: 2px solid transparent !important;
-  border-radius: 12px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* Transição mais suave */
+  border: 2px solid #eee !important; /* Borda leve por padrão */
+  border-radius: 16px; /* Bordas mais arredondadas (estilo moderno) */
+  background: #fff;
 }
 
 .animal-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 .5rem 1rem rgba(0,0,0,.10) !important;
+  transform: translateY(-5px);
+  box-shadow: 0 12px 20px rgba(0,0,0,0.08) !important;
+  border-color: #D95360 !important; /* Alterado do verde para o vermelho/rosado */
 }
 
-/* Essa classe é adicionada pelo Angular no bicho clicado */
+.animal-card:active {
+  transform: scale(0.96);
+}
+
 .selected-card {
-  border: 2px solid #0A5A30 !important;
-  background-color: #f4faf6;
+  border: 2px solid #D95360 !important; /* Alterado do verde para o vermelho/rosado */
+  background-color: #fff5f6 !important; /* Alterado para fundo levemente rosado */
+  box-shadow: 0 4px 15px rgba(217, 83, 96, 0.2) !important; /* Sombra ajustada para o tom rosado */
 }
 
-.selected-card h4 {
-  color: #0A5A30;
+.group-badge {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #6c757d;
+  font-weight: 700;
 }
 
-.btn-warning {
-  background-color: #FFD700;
-  border: none;
-  color: #000;
+/* Efeitos de Hover para o Menu e Ícones do Topo */
+/* =========================================
+   EFEITOS GLOBAIS DE INTERAÇÃO (TODA A TELA)
+   ========================================= */
+
+/* 1. Botões Gerais (Confirmar Aposta, Gerar Sorteio, etc) */
+.btn {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s, filter 0.2s !important;
 }
-.btn-warning:hover {
-  background-color: #F8C300;
+
+/* O botão só pula se não estiver bloqueado (disabled) */
+.btn:not(:disabled):hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(217, 83, 96, 0.2) !important;
+  filter: brightness(0.95); /* Deixa a cor levemente mais intensa */
+}
+
+/* Cursor de "proibido" quando o botão confirmar aposta estiver cinza/bloqueado */
+.btn:disabled {
+  cursor: not-allowed !important;
+}
+
+/* 2. Campos de Texto e Selects (Formulário de Aposta) */
+.form-control, .form-select, .input-group-text {
+  transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+}
+
+/* Quando passa o mouse no select ou input */
+.form-control:hover:not(:disabled), .form-select:hover:not(:disabled) {
+  border-color: #D95360;
+  background-color: #fff9f9 !important; /* Fundo rosadinho para mostrar que pode clicar/digitar */
+  cursor: pointer;
+}
+
+/* Quando o usuário clica para digitar (Focus) */
+.form-control:focus, .form-select:focus {
+  border-color: #D95360;
+  box-shadow: 0 0 0 0.25rem rgba(217, 83, 96, 0.25); /* Brilho rosado por fora do input */
+  background-color: #fff !important;
+}
+
+/* 3. Tabela de Histórico (Destaca a linha inteira ao passar o mouse) */
+.table-hover tbody tr {
+  transition: background-color 0.2s, transform 0.2s;
+  cursor: pointer;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #fff5f6 !important; /* Fundo rosado claro */
+  transform: scale(1.01); /* A linha dá um zoom levíssimo */
 }
