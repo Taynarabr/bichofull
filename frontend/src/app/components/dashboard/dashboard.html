@@ -15,10 +15,10 @@
         <i class="bi bi-diamond-fill"></i> <span class="d-none d-sm-inline">Jogo do Bicho</span>
       </h4>
 
-      <div class="d-flex align-items-center justify-content-center gap-3 mx-auto mx-sm-0 my-2 my-sm-0" *ngIf="userProfile?.role !== 'ADMIN'">
+      <div class="d-flex align-items-center justify-content-center gap-3 mx-auto mx-sm-0 my-2 my-sm-0" *ngIf="userProfile.role !== 'ADMIN'">
         <div class="text-end">
           <small class="text-muted d-block fw-bold lh-1 mb-1" style="font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase;">Saldo Atual</small>
-          <strong class="fs-4 fs-md-5 lh-1" style="color: #D95360;">{{ userProfile?.balance | currency:'BRL' }}</strong>
+          <strong class="fs-4 fs-md-5 lh-1" style="color: #D95360;">{{ userProfile.balance | currency:'BRL' }}</strong>
         </div>
         <button class="btn text-white fw-bold px-3 py-2 rounded-pill shadow-sm d-flex align-items-center gap-1" 
                 style="background-color: #28a745; transition: transform 0.2s;" 
@@ -52,7 +52,7 @@
     </div>
 
     <div class="d-flex justify-content-start justify-content-sm-center gap-3 gap-md-5 py-2 bg-white shadow-sm mb-4 overflow-auto flex-nowrap px-3 px-md-0 w-100" style="border-bottom: 2px solid #f8f9fa;">
-      <span *ngIf="userProfile?.role !== 'ADMIN'" class="py-2 px-2 text-nowrap" 
+      <span *ngIf="userProfile.role !== 'ADMIN'" class="py-2 px-2 text-nowrap" 
             (click)="activeTab = 'jogo'"
             [style.color]="activeTab === 'jogo' ? '#D95360' : '#6c757d'"
             [style.border-bottom]="activeTab === 'jogo' ? '3px solid #D95360' : 'none'"
@@ -60,7 +60,7 @@
         <i class="bi bi-house me-1"></i> Jogo
       </span>
 
-      <span *ngIf="userProfile?.role === 'ADMIN'" class="py-2 px-2 text-nowrap" 
+      <span *ngIf="userProfile.role === 'ADMIN'" class="py-2 px-2 text-nowrap" 
             (click)="activeTab = 'jogo'"
             [style.color]="activeTab === 'jogo' ? '#D95360' : '#6c757d'"
             [style.border-bottom]="activeTab === 'jogo' ? '3px solid #D95360' : 'none'"
@@ -84,7 +84,7 @@
         <i class="bi bi-clock-history me-1"></i> Histórico
       </span>
 
-      <span *ngIf="userProfile?.role !== 'ADMIN'" class="py-2 px-2 text-nowrap" 
+      <span *ngIf="userProfile.role !== 'ADMIN'" class="py-2 px-2 text-nowrap" 
             (click)="activeTab = 'financeiro'; financeAction = 'withdraw'"
             [style.color]="activeTab === 'financeiro' ? '#D95360' : '#6c757d'"
             [style.border-bottom]="activeTab === 'financeiro' ? '3px solid #D95360' : 'none'"
@@ -100,7 +100,7 @@
       </span>
     </div>
 
-    <div *ngIf="userProfile?.role === 'ADMIN' && activeTab === 'jogo'" class="px-3 px-md-0">
+    <div *ngIf="userProfile.role === 'ADMIN' && activeTab === 'jogo'" class="px-3 px-md-0">
       <div class="card border-0 shadow-sm mb-4 rounded-4 overflow-hidden">
         <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-md-center bg-white p-4 gap-3">
           <div>
@@ -146,7 +146,7 @@
       </div>
     </div>
 
-    <div *ngIf="userProfile?.role !== 'ADMIN' && activeTab === 'jogo'" class="px-3 px-md-0">
+    <div *ngIf="userProfile.role !== 'ADMIN' && activeTab === 'jogo'" class="px-3 px-md-0">
       <div class="row g-4">
         <div class="col-12 col-xl-8">
           <div class="game-container mb-4">
@@ -282,12 +282,12 @@
     <div *ngIf="activeTab === 'historico'" class="px-3 px-md-5 pb-5">
       <div class="card border-0 shadow-sm rounded-4 overflow-hidden" style="border-top: 6px solid #D95360 !important;">
         <div class="card-header bg-white py-4 border-0">
-          <h4 class="fw-bold mb-0 text-dark"><i class="bi bi-clock-history text-danger me-2"></i> {{ userProfile?.role === 'ADMIN' ? 'Todos os Sorteios' : 'Todo o seu Histórico' }}</h4>
+          <h4 class="fw-bold mb-0 text-dark"><i class="bi bi-clock-history text-danger me-2"></i> {{ userProfile.role === 'ADMIN' ? 'Todos os Sorteios' : 'Todo o seu Histórico' }}</h4>
           <p class="text-muted small mb-0">Confira abaixo todos os registros do sistema.</p>
         </div>
         <div class="card-body p-0">
           <div class="table-responsive">
-            <table *ngIf="userProfile?.role === 'ADMIN'" class="table table-hover align-middle mb-0 text-nowrap text-center">
+            <table *ngIf="userProfile.role === 'ADMIN'" class="table table-hover align-middle mb-0 text-nowrap text-center">
               <thead class="table-light">
                 <tr><th>Data</th><th>1º Prêmio</th><th>2º</th><th>3º</th><th>4º</th><th>5º</th></tr>
               </thead>
@@ -300,7 +300,7 @@
               </tbody>
             </table>
 
-            <table *ngIf="userProfile?.role !== 'ADMIN'" class="table table-hover align-middle mb-0 text-nowrap">
+            <table *ngIf="userProfile.role !== 'ADMIN'" class="table table-hover align-middle mb-0 text-nowrap">
               <thead class="table-light">
                 <tr><th>Tipo</th><th>Escolha</th><th>Valor</th><th>Status</th><th>Prêmio</th></tr>
               </thead>
@@ -354,7 +354,7 @@
       </div>
     </div>
 
-    <div *ngIf="activeTab === 'financeiro' && userProfile?.role !== 'ADMIN'" class="px-3 px-md-5 pb-5">
+    <div *ngIf="activeTab === 'financeiro' && userProfile.role !== 'ADMIN'" class="px-3 px-md-5 pb-5">
       <div class="row justify-content-center">
         <div class="col-12 col-md-8 col-lg-6 col-xl-5">
 
@@ -445,7 +445,7 @@
                 <div class="text-start mb-4">
                   <div class="bg-light p-3 rounded-3 border mb-3 d-flex justify-content-between align-items-center">
                     <span class="text-muted fw-bold small">Saldo Disponível:</span>
-                    <strong class="fs-5 text-dark">{{ userProfile?.balance | currency:'BRL' }}</strong>
+                    <strong class="fs-5 text-dark">{{ userProfile.balance | currency:'BRL' }}</strong>
                   </div>
 
                   <label class="small fw-bold text-muted mb-2 text-uppercase">Valor do Saque</label>
@@ -457,7 +457,7 @@
                   <div class="d-flex gap-2 mb-4">
                     <button class="btn btn-outline-danger flex-fill py-1 fw-bold rounded-3 small" (click)="setWithdrawAmount(50)">R$ 50</button>
                     <button class="btn btn-outline-danger flex-fill py-1 fw-bold rounded-3 small" (click)="setWithdrawAmount(100)">R$ 100</button>
-                    <button class="btn btn-outline-danger flex-fill py-1 fw-bold rounded-3 small" (click)="setWithdrawAmount(userProfile?.balance || 0)">Total</button>
+                    <button class="btn btn-outline-danger flex-fill py-1 fw-bold rounded-3 small" (click)="setWithdrawAmount(userProfile.balance || 0)">Total</button>
                   </div>
 
                   <label class="small fw-bold text-muted mb-2 text-uppercase">Sua Chave PIX</label>
@@ -564,8 +564,8 @@
           <h6 class="fw-bold mb-3">Gestão da Conta</h6>
           <div class="p-3 bg-light rounded-4 mb-3 text-start text-md-end border border-opacity-10">
             <small class="text-muted d-block">Logado como:</small>
-            <strong class="text-dark d-block">{{ userProfile?.name }}</strong>
-            <small class="text-muted small d-block">{{ userProfile?.email }}</small>
+            <strong class="text-dark d-block">{{ userProfile!.name }}</strong>
+            <small class="text-muted small d-block">{{ userProfile!.email }}</small>
           </div>
           
           <button class="btn btn-outline-danger d-inline-flex align-items-center gap-2 px-4 py-2" 

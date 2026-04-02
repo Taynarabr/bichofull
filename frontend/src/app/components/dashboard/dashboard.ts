@@ -195,7 +195,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       next: (res) => {
         Swal.fire({
           title: 'Aposta Confirmada!',
-          text: `Boa sorte com o seu ${this.selectedAnimal!.name}!`,
+          text: 'Boa sorte com o seu ' + this.selectedAnimal!.name + '!',
           icon: 'success',
           showConfirmButton: false,
           timer: 2000,
