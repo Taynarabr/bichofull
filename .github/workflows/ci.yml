@@ -2,15 +2,15 @@ name: CI BichoFull
 
 on:
   push:
-    # Adicionado a branch develop conforme exigido 
+    # Disparado em todo push para main e develop 
     branches: [ main, develop ]
   pull_request:
-    # Adicionado a branch develop conforme exigido 
+    # Disparado em todo pull request para main e develop 
     branches: [ main, develop ]
 
 jobs:
   backend:
-    name: Backend CI (Build, Lint & Test)
+    name: Backend CI (Build & Test)
     runs-on: ubuntu-latest
     steps:
     - name: Checkout do código
@@ -22,12 +22,12 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
 
-    # Build Check: Validar se o build ocorre sem erros [cite: 54]
+    # Build Check: Validar se o build ocorre sem erros 
     - name: Build do Backend
       working-directory: ./backend
       run: mvn clean install -DskipTests
 
-    # Tests: Executar a suíte de testes unitários do backend [cite: 53]
+    # Tests: Executar a suíte de testes unitários do backend 
     - name: Executar Testes do Backend
       working-directory: ./backend
       run: mvn test
@@ -53,12 +53,17 @@ jobs:
       working-directory: ./frontend
       run: npm run lint --if-present
 
-    # Build Check: Validar se o build do frontend ocorre sem erros [cite: 54]
+    # Build Check: Validar se o build do frontend ocorre sem erros 
     - name: Build do Frontend
       working-directory: ./frontend
       run: npm run build --if-present
 
-    # Tests: Executar testes unitários do frontend [cite: 53]
+    # Necessário para baixar o binário do navegador no ambiente de CI
+    - name: Instalar Navegadores do Playwright
+      working-directory: ./frontend
+      run: npx playwright install --with-deps chromium
+
+    # Tests: Executar testes unitários do frontend 
     - name: Executar Testes do Frontend
       working-directory: ./frontend
-      run: npm test -- --watch=false --browsers=chromium
+      run: npm test -- --watch=false --browser=chromium
