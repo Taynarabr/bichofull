@@ -80,15 +80,12 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    // Rota de Reset de Senha corrigida para retornar JSON
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestParam String email, @RequestParam String newPassword) {
         try {
             userService.resetPassword(email, newPassword);
-            // Retornamos um objeto JSON com a chave "message"
             return ResponseEntity.ok(Map.of("message", "Senha alterada com sucesso!"));
         } catch (Exception e) {
-            // Retornamos um erro 400 com a mensagem da exceção em formato JSON
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                  .body(Map.of("message", e.getMessage()));
         }

@@ -16,19 +16,16 @@ public class Animal {
     private String nome;
     
     @Column(nullable = false, length = 20)
-    private String dezenas; // "01,02,03,04"
+    private String dezenas; 
     
-    // Construtor padrão (JPA)
     protected Animal() {}
     
-    // Construtor com parâmetros (ABSTRAÇÃO)
     public Animal(Integer grupo, String nome, String dezenas) {
         setGrupo(grupo);
         setNome(nome);
         setDezenas(dezenas);
     }
     
-    // ENCAPSULAMENTO - Métodos de negócio
     public boolean contemDezena(String dezena) {
         validarDezena(dezena);
         return getListaDezenas().contains(dezena);
@@ -36,7 +33,7 @@ public class Animal {
     
     public boolean contemMilhar(String milhar) {
         if (milhar == null || milhar.length() != 4) return false;
-        String dezena = milhar.substring(2, 4); // Últimos 2 dígitos
+        String dezena = milhar.substring(2, 4); 
         return contemDezena(dezena);
     }
     
@@ -64,7 +61,6 @@ public class Animal {
         }
     }
     
-    // Getters e Setters com validação
     public Integer getGrupo() { return grupo; }
     
     public void setGrupo(Integer grupo) {

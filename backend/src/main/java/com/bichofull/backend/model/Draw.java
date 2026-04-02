@@ -35,10 +35,8 @@ public class Draw {
     @OneToMany(mappedBy = "draw")
     private List<Bet> bets = new ArrayList<>();
     
-    // Construtor padrão (JPA)
     protected Draw() {}
     
-    // Construtor principal
     public Draw(String milhar1, String milhar2, String milhar3, String milhar4, String milhar5) {
         setMilhar1(milhar1);
         setMilhar2(milhar2);
@@ -48,7 +46,6 @@ public class Draw {
         this.drawDate = LocalDateTime.now();
     }
     
-    // ========== MÉTODOS DE NEGÓCIO ==========
     
     /**
      * Verifica se uma milhar foi premiada em determinada posição
@@ -90,14 +87,11 @@ public class Draw {
         return milhar.substring(2, 4);
     }
     
-    /**
-     * Retorna todas as milhares sorteadas
-     */
+
     public List<String> getAllMilhares() {
         return List.of(milhar1, milhar2, milhar3, milhar4, milhar5);
     }
     
-    // ========== GETTERS E SETTERS ==========
     
     public Long getId() {
         return id;
@@ -156,7 +150,6 @@ public class Draw {
         return bets;
     }
     
-    // Método privado de validação
     private void validateMilhar(String milhar) {
         if (milhar == null || !milhar.matches("\\d{4}")) {
             throw new IllegalArgumentException("Milhar deve ter exatamente 4 dígitos");

@@ -56,7 +56,6 @@ export class HomeComponent {
     });
   }
 
-  // Redefinição de senha automática via banco de dados
   recuperarSenha() {
     Swal.fire({
         title: 'Redefinir Senha',
@@ -120,7 +119,6 @@ export class HomeComponent {
     });
   }
 
-  // Simulação de login social com registro automático
   abrirRedeSocial(rede: string) {
     const redeFormatada = rede.charAt(0).toUpperCase() + rede.slice(1);
     Swal.fire({

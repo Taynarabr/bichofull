@@ -2,10 +2,8 @@ name: CI BichoFull
 
 on:
   push:
-    # Disparado em todo push para main e develop 
     branches: [ main, develop ]
   pull_request:
-    # Disparado em todo pull request para main e develop 
     branches: [ main, develop ]
 
 jobs:
@@ -22,12 +20,10 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
 
-    # Build Check: Validar se o build ocorre sem erros 
     - name: Build do Backend
       working-directory: ./backend
       run: mvn clean install -DskipTests
 
-    # Tests: Executar a suíte de testes unitários do backend 
     - name: Executar Testes do Backend
       working-directory: ./backend
       run: mvn test
@@ -48,22 +44,18 @@ jobs:
       working-directory: ./frontend
       run: npm install
 
-    # Linter: Verificar padrões de código 
     - name: Executar Linter
       working-directory: ./frontend
       run: npm run lint --if-present
 
-    # Build Check: Validar se o build do frontend ocorre sem erros 
     - name: Build do Frontend
       working-directory: ./frontend
       run: npm run build --if-present
 
-    # Necessário para baixar o binário do navegador no ambiente de CI
     - name: Instalar Navegadores do Playwright
       working-directory: ./frontend
       run: npx playwright install --with-deps chromium
 
-    # Tests: Executar testes unitários do frontend 
     - name: Executar Testes do Frontend
       working-directory: ./frontend
       run: npm test -- --watch=false --browsers=chromium

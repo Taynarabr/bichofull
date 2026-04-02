@@ -11,7 +11,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*") // Permitir requisições do frontend
+@CrossOrigin(origins = "*") 
 public class AuthController {
 
     private final UserService userService;

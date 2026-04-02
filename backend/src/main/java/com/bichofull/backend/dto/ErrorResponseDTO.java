@@ -16,7 +16,7 @@ public class ErrorResponseDTO {
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime timestamp;
     
-    private Map<String, String> errors; // Para erros de validação
+    private Map<String, String> errors; 
     
     // Construtores
     public ErrorResponseDTO() {

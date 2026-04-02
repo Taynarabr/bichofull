@@ -35,7 +35,6 @@ public class AnimalService {
             throw new IllegalArgumentException("Dezena deve ter 2 dígitos");
         }
         
-        // Busca todos animais e verifica qual contém a dezena
         Animal animal = animalRepository.findAll().stream()
             .filter(a -> a.contemDezena(dezena))
             .findFirst()

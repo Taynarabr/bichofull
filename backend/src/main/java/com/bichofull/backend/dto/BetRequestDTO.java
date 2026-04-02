@@ -18,7 +18,7 @@ public class BetRequestDTO {
     @NotNull(message = "Escolha é obrigatória")
     private String choice;
     
-    private Integer animalGroup; // Para aposta de GRUPO (1 a 25)
+    private Integer animalGroup;
     
     // Construtores
     public BetRequestDTO() {}

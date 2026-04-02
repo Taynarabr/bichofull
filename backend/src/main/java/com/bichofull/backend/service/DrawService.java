@@ -31,7 +31,6 @@ public class DrawService {
     }
     
     public DrawDTO generateDraw() {
-        // 1. Gera o sorteio base
         Draw draw = new Draw(
             generateRandomMilhar(),
             generateRandomMilhar(),
@@ -47,7 +46,6 @@ public class DrawService {
         for (Bet bet : pendingBets) {
             bet.processResult(savedDraw); 
             betRepository.save(bet);
-            // Salva o usuário para garantir que o saldo creditado persista
             userRepository.save(bet.getUser()); 
         }
         

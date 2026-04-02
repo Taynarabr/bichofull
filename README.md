@@ -53,7 +53,7 @@ Para facilitar a avaliação imediata sem necessidade de novos cadastros, utiliz
 * **Java JDK 21** instalado.
 * **Node.js** (v20+) e **NPM** instalados.
 * **Maven** instalado.
-* **MySQL/MariaDB** rodando na porta 3306.
+* **MySQL** rodando na porta 3306.
 
 ### 1. Preparação do Banco de Dados
 No seu terminal MySQL, crie o esquema necessário:

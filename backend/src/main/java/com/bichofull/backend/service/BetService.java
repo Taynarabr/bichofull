@@ -38,23 +38,18 @@ public class BetService {
     }
     
     public BetResponseDTO placeBet(Long userId, BetRequestDTO request) {
-        // Validar request
         if (!request.isValid()) {
             throw new IllegalArgumentException("Dados da aposta inválidos");
         }
         
-        // Buscar usuário
         User user = userService.findUserById(userId);
         
-        // Validar saldo
         if (!user.temSaldoSuficiente(request.getValue())) {
             throw new InsufficientBalanceException("Saldo insuficiente para realizar a aposta");
         }
         
-        // Debita saldo
         user.debitarSaldo(request.getValue());
         
-        // Cria aposta
         Bet bet = new Bet();
         bet.setUser(user);
         bet.setType(Bet.BetType.valueOf(request.getType()));
@@ -62,7 +57,6 @@ public class BetService {
         bet.setChoice(request.getChoice());
         bet.setStatus(Bet.BetStatus.PENDENTE);
         
-        // Se for aposta de grupo, associa o animal
         if (bet.getType() == Bet.BetType.GRUPO) {
             Integer grupo = request.getAnimalGroup() != null ? 
                 request.getAnimalGroup() : Integer.parseInt(request.getChoice());
@@ -81,7 +75,6 @@ public class BetService {
         
         Draw draw = drawService.findDrawEntityById(drawId);
         
-        // Verificar se aposta já foi processada
         if (bet.getDraw() != null) {
             throw new IllegalStateException("Aposta já foi processada");
         }
@@ -146,7 +139,6 @@ public class BetService {
     }
     
     public List<BetResponseDTO> getUserBets(Long userId) {
-        // Verificar se usuário existe
         userService.findUserById(userId);
         
         return betRepository.findByUserId(userId).stream()

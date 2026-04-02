@@ -209,7 +209,6 @@ footer ul li:hover {
   text-decoration: underline;
 }
 
-/* Efeito no botão de sair do rodapé */
 footer .btn-outline-danger {
   transition: all 0.3s ease;
 }

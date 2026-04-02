@@ -15,16 +15,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(name = "name", nullable = false, length = 100)  // ← MAPEADO para coluna "name"
+    @Column(name = "name", nullable = false, length = 100)  
     private String nome;
     
-    @Column(name = "email", nullable = false, unique = true, length = 100)  // ← MAPEADO para coluna "email"
+    @Column(name = "email", nullable = false, unique = true, length = 100)  
     private String email;
     
-    @Column(name = "password", nullable = false, length = 255)  // ← MAPEADO para coluna "password"
+    @Column(name = "password", nullable = false, length = 255)  
     private String senha;
     
-    @Column(name = "balance", nullable = false, precision = 10, scale = 2)  // ← MAPEADO para coluna "balance"
+    @Column(name = "balance", nullable = false, precision = 10, scale = 2)  
     private BigDecimal saldo = new BigDecimal("1000.00");
 
     @Column(name = "role", nullable = false, length = 20)
@@ -93,7 +93,6 @@ public class User {
         bet.setUser(null);
     }
     
-    // Getters e Setters com validação
     public Long getId() { return id; }
     
     public String getNome() { return nome; }

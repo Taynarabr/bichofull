@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonIgnore; // Importação Crucial
+import com.fasterxml.jackson.annotation.JsonIgnore; 
 
 @Entity
 @Table(name = "bets")
@@ -36,22 +36,20 @@ public class Bet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    // ======== AQUI ESTÁ A MÁGICA: @JsonIgnore ========
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnore // Impede o Loop Infinito (User -> Bet -> User...)
+    @JsonIgnore 
     private User user;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "draw_id")
-    @JsonIgnore // Impede o Loop Infinito no Sorteio
+    @JsonIgnore 
     private Draw draw;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "animal_id")
-    @JsonIgnore // Impede o Loop Infinito no Animal
+    @JsonIgnore 
     private Animal animal;
-    // =================================================
     
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
@@ -99,7 +97,6 @@ public class Bet {
         this.updatedAt = LocalDateTime.now();
     }
     
-    // ========== MÉTODOS DE NEGÓCIO ==========
     
     public boolean processResult(Draw draw) {
         if (this.draw != null) {

@@ -61,19 +61,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     { nome: 'COR', hora: '21:00', realizado: false }
   ];
 
-  // ==========================================
-  // VARIÁVEIS DO FINANCEIRO
-  // ==========================================
   financeAction: 'deposit' | 'withdraw' = 'deposit';
   depositAmount: number = 0;
   pixGenerated: boolean = false;
   pixCode: string = '00020126580014br.gov.bcb.pix0136pix@jogodobicho.com.br0203Pix520400005303986540510.005802BR5909SAO PAULO6009JOGO BIXO6207050300063041D3D';
   withdrawAmount: number = 0;
   withdrawPixKey: string = '';
-  
-  // ==========================================
-  // VARIÁVEIS DO PERFIL
-  // ==========================================
+
   editProfileData = {
     name: '',
     email: '',
@@ -269,9 +263,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  // ==========================================
-  // FUNÇÕES DO FINANCEIRO (DEPÓSITO E SAQUE)
-  // ==========================================
   setDepositAmount(amount: number) {
     this.depositAmount = amount;
     this.pixGenerated = false; 
@@ -360,9 +351,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ==========================================
-  // FUNÇÕES DO PERFIL
-  // ==========================================
   abrirPerfil() {
     if (this.userProfile) {
       this.editProfileData.name = this.userProfile.name;
@@ -412,7 +400,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     window.open('https://wa.me/5500000000000', '_blank');
   }
 
-  // Adicione estas funções no seu DashboardComponent
 
   scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -473,16 +460,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
         if (btnSorteio) {
           btnSorteio.addEventListener('click', () => {
-            this.activeTab = 'resultados'; // Direciona para a aba
-            this.scrollToTop();           // Sobe a tela
-            Swal.close();                 // Fecha o alerta
+            this.activeTab = 'resultados'; 
+            this.scrollToTop();           
+            Swal.close();                 
           });
         }
 
         if (btnBonus) {
           btnBonus.addEventListener('click', () => {
-            this.verRegras(); // Abre as regras ou termos de bônus
-            // Swal.close() não precisa aqui se você quiser que o outro abra por cima
+            this.verRegras(); 
           });
         }
       }

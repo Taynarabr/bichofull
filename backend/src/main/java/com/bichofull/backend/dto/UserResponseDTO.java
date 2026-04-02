@@ -46,8 +46,8 @@ public class UserResponseDTO {
     public BigDecimal getBalance() { return balance; } 
     public void setBalance(BigDecimal balance) { this.balance = balance; } 
 
-    public String getRole() { return role; } // NOVO: Getter para o role
-    public void setRole(String role) { this.role = role; } // NOVO: Setter para o role
+    public String getRole() { return role; } 
+    public void setRole(String role) { this.role = role; } 
     
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

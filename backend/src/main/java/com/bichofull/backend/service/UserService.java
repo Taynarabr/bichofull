@@ -55,9 +55,7 @@ public class UserService {
         return new AuthResponseDTO(token, user.getId(), user.getNome(), user.getEmail(), user.getRole());
     }
 
-    // ==========================================
-    // REDEFINIR SENHA (ESQUECI A SENHA)
-    // ==========================================
+
     public void resetPassword(String email, String newPassword) {
         User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new ResourceNotFoundException("E-mail não encontrado no sistema."));
@@ -145,9 +143,6 @@ public class UserService {
         return dto;
     }
 
-    // ==========================================
-    // FINANCEIRO (DEPÓSITO E SAQUE)
-    // ==========================================
     public UserResponseDTO deposit(Long userId, BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("O valor do depósito deve ser maior que zero.");
