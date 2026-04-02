@@ -66,4 +66,4 @@ jobs:
     # Tests: Executar testes unitários do frontend 
     - name: Executar Testes do Frontend
       working-directory: ./frontend
-      run: npm test -- --watch=false --browser=chromium
+      run: npm test -- --watch=false --browsers=chromium
