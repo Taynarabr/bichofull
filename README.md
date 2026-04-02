@@ -46,4 +46,4 @@ ng serve
 
 ---
 
-**Desenvolvido por:** Tayna - Engenharia de Software 6º Período.
+**Desenvolvido por:** Taynara Batista Ribeiro - Engenharia de Software 6º Período.
