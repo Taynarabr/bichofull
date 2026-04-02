@@ -6,7 +6,7 @@ O **BichoFull** é um sistema completo, moderno e responsivo para gestão de apo
 
 ## 🚀 Status do Projeto: [![CI BichoFull](https://github.com/Taynarabr/bichofull/actions/workflows/ci.yml/badge.svg)](https://github.com/Taynarabr/bichofull/actions)
 
-O selo acima indica que o código passou em todos os testes automatizados, builds e verificações de padrões (Lint).
+O selo acima indica que o código passou em todos os testes automatizados, builds e verificações de padrões (Lint) no GitHub Actions.
 
 ---
 
@@ -17,7 +17,7 @@ O selo acima indica que o código passou em todos os testes automatizados, build
 * **Motor de Apostas:** Apostas em Grupos (Animais), Dezenas e Milhares, seguindo a tabela oficial.
 * **Cálculo de Prêmios:** Pagamentos automáticos de **18x (Grupo)** a **4000x (Milhar)** o valor apostado.
 * **Gestão Financeira:** Simulação de depósitos via Pix e saques inteligentes com validação de saldo fictício (Saldo inicial de R$ 1.000,00).
-* **Dashboard em Tempo Real:** Atualização automática (Polling) a cada 10 segundos para exibir novos sorteios e status de apostas.
+* **Dashboard em Tempo Real:** Atualização automática (Polling) a cada 10 segundos para exibir novos sorteios e status de apostas sem recarregar a página.
 
 ### ⚙️ Painel do Administrador (Admin)
 * **Geração de Sorteios:** Motor para sorteio de resultados oficiais (1º ao 5º prêmio).
@@ -47,65 +47,13 @@ O selo acima indica que o código passou em todos os testes automatizados, build
 ## 🚀 Como Executar o Projeto na sua Máquina
 
 ### 📋 Pré-requisitos
-Certifique-se de ter instalado:
-1.  **Java JDK 21** ou superior.
-2.  **Node.js** (versão 20 recomendada) e **NPM**.
-3.  **Maven**.
-4.  **MySQL Server** rodando na porta padrão (3306).
+Certifique-se de ter instalado em sua máquina:
+1. **Java JDK 21** ou superior.
+2. **Node.js** (versão 20 recomendada) e **NPM**.
+3. **Maven**.
+4. **MySQL Server** rodando na porta padrão (3306).
 
 ### 1. Configurando o Banco de Dados
-1.  No seu MySQL, crie o banco de dados:
-    ```sql
-    CREATE DATABASE bichofull;
-    ```
-2.  Acesse `backend/src/main/resources/application.properties` e ajuste as credenciais:
-    ```properties
-    spring.datasource.url=jdbc:mysql://localhost:3306/bichofull
-    spring.datasource.username=seu_usuario
-    spring.datasource.password=sua_senha
-    ```
-
-### 2. Executando o Backend (Spring Boot)
-Abra um terminal na pasta raiz e execute:
-```bash
-cd backend
-mvn clean install
-mvn spring-boot:run
-API: Disponível em http://localhost:8080.
-
-Swagger (Documentação): http://localhost:8080/swagger-ui/index.html.
-
-3. Executando o Frontend (Angular)
-Abra um novo terminal na pasta raiz e execute:
-
-Bash
-cd frontend
-npm install
-npm start
-URL: Acesse o sistema em http://localhost:4200.
-
-🧪 Qualidade e Automação (CI/CD)
-Este repositório utiliza GitHub Actions para garantir a integridade de cada entrega. Em todo push ou pull_request, o sistema valida:
-
-Build Check: Garante que o frontend e o backend compilam sem erros.
-
-Linter: Verifica a padronização e boas práticas do código Angular.
-
-Testes Unitários: Execução de suítes de testes automatizados via Vitest para garantir que mudanças no código não quebrem a lógica de negócios.
-
-📌 Gestão do Projeto
-O desenvolvimento foi orquestrado via GitHub Projects utilizando a metodologia Kanban, com as colunas:
-
-Backlog: Ideias e futuras implementações.
-
-To Do: Tarefas aguardando início.
-
-In Progress: Atividades em desenvolvimento.
-
-Review/QA: Código em fase de teste e revisão de Pull Request.
-
-Done: Funcionalidades integradas e validadas pelo CI.
-
-Desenvolvido por: Taynara Batista Ribeiro
-
-6º Período - Engenharia de Software
+1. No seu MySQL, crie o banco de dados:
+   ```sql
+   CREATE DATABASE bichofull;
