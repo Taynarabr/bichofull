@@ -22,4 +22,11 @@ export class UserService {
   getUserById(id: number): Observable<UserProfile> {
     return this.http.get<UserProfile>(`${this.apiUrl}/${id}`);
   }
+
+  // ==========================================
+  // NOVA ROTA: DEPÓSITO (PIX)
+  // ==========================================
+  deposit(userId: number, amount: number): Observable<UserProfile> {
+    return this.http.post<UserProfile>(`${this.apiUrl}/${userId}/deposit?amount=${amount}`, {});
+  }
 }

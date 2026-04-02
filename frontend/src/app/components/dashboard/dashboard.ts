@@ -5,6 +5,7 @@ import { DrawService } from '../../services/draw.service';
 import { BetService } from '../../services/bet.service';
 import { Draw } from '../../models/draw.model';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2'; // <-- IMPORTAÇÃO DO SWEETALERT AQUI
 
 interface Animal { name: string; group: string; icon: string; dezenas: string; }
 
@@ -44,21 +45,25 @@ export class DashboardComponent implements OnInit {
   ];
 
   estatisticas = {
-    vitoriasTotais: 124,
-    maiorPremio: 12450.00,
-    diasSeguidos: 12,
-    totalGanhos: 48200.00
+    vitoriasTotais: 0,
+    maiorPremio: 0,
+    diasSeguidos: 1, 
+    totalGanhos: 0
   };
 
-  dicaDeHoje = "O grupo do Leão (16) não é sorteado na cabeça há 5 dias. Pode ser uma boa aposta para a PT!";
+  dicaDeHoje = "O grupo do Leão (16) está muito forte hoje. Pode ser uma ótima aposta!";
 
   sorteiosDoDia = [
-    { nome: 'PTM', hora: '11:00', realizado: true },
-    { nome: 'PT', hora: '14:00', realizado: true },
+    { nome: 'PTM', hora: '11:00', realizado: false },
+    { nome: 'PT', hora: '14:00', realizado: false },
     { nome: 'PTV', hora: '16:00', realizado: false },
     { nome: 'PTN', hora: '18:00', realizado: false },
     { nome: 'COR', hora: '21:00', realizado: false }
   ];
+
+  depositAmount: number = 0;
+  pixGenerated: boolean = false;
+  pixCode: string = '00020126580014br.gov.bcb.pix0136pix@jogodobicho.com.br0203Pix520400005303986540510.005802BR5909SAO PAULO6009JOGO BIXO6207050300063041D3D';
 
   get progressoDiario() {
     const realizados = this.sorteiosDoDia.filter(s => s.realizado).length;
@@ -87,8 +92,31 @@ export class DashboardComponent implements OnInit {
       this.getUserData(Number(idLogado));
       this.listarSorteios();
       this.carregarApostas(Number(idLogado));
+      this.atualizarStatusSorteios(); 
     } else {
       this.router.navigate(['/login']);
+    }
+  }
+
+  atualizarStatusSorteios() {
+    const agora = new Date();
+    const horaAtual = agora.getHours().toString().padStart(2, '0') + ":" + agora.getMinutes().toString().padStart(2, '0');
+    
+    this.sorteiosDoDia.forEach(s => {
+      s.realizado = horaAtual >= s.hora;
+    });
+  }
+
+  calcularEstatisticas() {
+    if (!this.userBets || this.userBets.length === 0) return;
+
+    const apostasGanhas = this.userBets.filter(bet => bet.status === 'GANHOU');
+
+    this.estatisticas.vitoriasTotais = apostasGanhas.length;
+    this.estatisticas.totalGanhos = apostasGanhas.reduce((acumulador, aposta) => acumulador + (aposta.prize || 0), 0);
+    
+    if (apostasGanhas.length > 0) {
+      this.estatisticas.maiorPremio = Math.max(...apostasGanhas.map(aposta => aposta.prize || 0));
     }
   }
 
@@ -121,6 +149,7 @@ export class DashboardComponent implements OnInit {
     this.betService.getUserBets(userId).subscribe({
       next: (data) => {
         this.userBets = data.reverse(); 
+        this.calcularEstatisticas(); 
         this.cdr.detectChanges();
       }
     });
@@ -129,6 +158,7 @@ export class DashboardComponent implements OnInit {
   confirmBet() {
     if (!this.userProfile || !this.isBetValid()) return;
 
+    this.isLoading = true; 
     const betRequest = {
       type: this.betType,
       value: this.selectedAmount,
@@ -138,13 +168,33 @@ export class DashboardComponent implements OnInit {
 
     this.betService.placeBet(this.userProfile.id, betRequest).subscribe({
       next: (res) => {
-        alert('Aposta realizada com sucesso!');
+        // ALERTA ANIMADO DE SUCESSO
+        Swal.fire({
+          title: 'Aposta Confirmada!',
+          text: 'Sua aposta foi registrada. Boa sorte!',
+          icon: 'success',
+          confirmButtonColor: '#D95360'
+        });
+
         this.getUserData(this.userProfile!.id); 
         this.carregarApostas(this.userProfile!.id); 
         this.selectedAmount = 0;
         this.selectedAnimal = null;
+        this.isLoading = false;
+        this.cdr.detectChanges();
       },
-      error: (err) => alert(err.error?.message || 'Erro ao realizar aposta.')
+      error: (err) => {
+        // ALERTA ANIMADO DE ERRO
+        Swal.fire({
+          title: 'Ops!',
+          text: err.error?.message || 'Erro ao realizar a aposta.',
+          icon: 'error',
+          confirmButtonColor: '#D95360'
+        });
+
+        this.isLoading = false; 
+        this.cdr.detectChanges();
+      }
     });
   }
 
@@ -160,7 +210,17 @@ export class DashboardComponent implements OnInit {
   }
 
   gerarSorteio() {
-    this.drawService.generate().subscribe(() => this.listarSorteios());
+    this.drawService.generate().subscribe(() => {
+      // ALERTA PARA O ADMIN
+      Swal.fire({
+        title: 'Sorteio Realizado!',
+        text: 'Os resultados já estão disponíveis no sistema.',
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false
+      });
+      this.listarSorteios();
+    });
   }
 
   logout() {
@@ -182,5 +242,90 @@ export class DashboardComponent implements OnInit {
       case 'MILHAR': return amount * 4000;
       default: return 0;
     }
+  }
+
+  // ==========================================
+  // FUNÇÕES DO FINANCEIRO (PIX)
+  // ==========================================
+  
+  setDepositAmount(amount: number) {
+    this.depositAmount = amount;
+    this.pixGenerated = false; 
+  }
+
+  generatePix() {
+    if (this.depositAmount < 1) {
+      // ALERTA DE VALOR MÍNIMO
+      Swal.fire({
+        title: 'Atenção',
+        text: 'O valor mínimo de depósito é R$ 1,00.',
+        icon: 'warning',
+        confirmButtonColor: '#28a745'
+      });
+      return;
+    }
+    this.pixGenerated = true;
+  }
+
+  copyPix() {
+    navigator.clipboard.writeText(this.pixCode).then(() => {
+      // TOAST FLUTUANTE DE SUCESSO (Canto da tela)
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast: HTMLElement) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+      });
+
+      Toast.fire({
+        icon: 'success',
+        title: 'Código PIX copiado!'
+      });
+    });
+  }
+
+  simulatePayment() {
+    if (!this.userProfile) return;
+
+    this.isLoading = true; 
+
+    this.userService.deposit(this.userProfile.id, this.depositAmount).subscribe({
+      next: (updatedUser) => {
+        this.userProfile = updatedUser;
+        
+        Swal.fire({
+          title: 'Pagamento Aprovado!',
+          html: `Seu depósito de <strong>R$ ${this.depositAmount.toFixed(2)}</strong> caiu na conta.`,
+          icon: 'success',
+          confirmButtonText: 'Ver Saldo',
+          confirmButtonColor: '#28a745'
+        });
+        
+        this.depositAmount = 0;
+        this.pixGenerated = false;
+        this.activeTab = 'jogo';
+        
+        this.isLoading = false; 
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Erro ao fazer depósito:', err);
+        
+        Swal.fire({
+          title: 'Falha no Pagamento',
+          text: 'Não conseguimos conectar com o banco. Tente novamente.',
+          icon: 'error',
+          confirmButtonColor: '#D95360'
+        });
+        
+        this.isLoading = false; 
+        this.cdr.detectChanges();
+      }
+    });
   }
 }

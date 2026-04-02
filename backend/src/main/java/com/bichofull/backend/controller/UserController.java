@@ -22,6 +22,7 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
+
     @PostMapping
     public ResponseEntity<UserResponseDTO> register(@Valid @RequestBody UserRequestDTO request) {
         UserResponseDTO created = userService.register(request);
@@ -64,5 +65,14 @@ public class UserController {
     public ResponseEntity<BigDecimal> getBalance(@PathVariable Long id) {
         BigDecimal balance = userService.getBalance(id);
         return ResponseEntity.ok(balance);
+    }
+
+    // ==========================================
+    // NOVA ROTA: DEPÓSITO (PIX)
+    // ==========================================
+    @PostMapping("/{id}/deposit")
+    public ResponseEntity<UserResponseDTO> deposit(@PathVariable Long id, @RequestParam BigDecimal amount) {
+        UserResponseDTO updatedUser = userService.deposit(id, amount);
+        return ResponseEntity.ok(updatedUser);
     }
 }

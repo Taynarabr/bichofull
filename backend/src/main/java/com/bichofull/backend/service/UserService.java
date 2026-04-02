@@ -133,4 +133,19 @@ public class UserService {
         dto.setUpdatedAt(user.getUpdatedAt());
         return dto;
     }
+
+    // ==========================================
+    // MÉTODO PARA PROCESSAR O DEPÓSITO PIX
+    // ==========================================
+    public UserResponseDTO deposit(Long userId, BigDecimal amount) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("O valor do depósito deve ser maior que zero.");
+        }
+        
+        User user = findUserById(userId);
+        user.creditarSaldo(amount); // Chama o método seguro da sua Entidade
+        User savedUser = userRepository.save(user); // Salva de fato no banco de dados
+        
+        return toDTO(savedUser); // Retorna o usuário com o saldo atualizado para o frontend
+    }
 }

@@ -15,9 +15,18 @@
         <i class="bi bi-diamond-fill"></i> <span class="d-none d-sm-inline">Jogo do Bicho</span>
       </h4>
 
-      <div class="text-center mx-auto mx-sm-0 my-2 my-sm-0" *ngIf="userProfile?.role !== 'ADMIN'">
-        <small class="text-muted d-block fw-bold" style="font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase;">Saldo Atual</small>
-        <strong class="fs-4 fs-md-5" style="color: #D95360;">{{ userProfile?.balance | currency:'BRL' }}</strong>
+      <div class="d-flex align-items-center justify-content-center gap-3 mx-auto mx-sm-0 my-2 my-sm-0" *ngIf="userProfile?.role !== 'ADMIN'">
+        <div class="text-end">
+          <small class="text-muted d-block fw-bold lh-1 mb-1" style="font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase;">Saldo Atual</small>
+          <strong class="fs-4 fs-md-5 lh-1" style="color: #D95360;">{{ userProfile?.balance | currency:'BRL' }}</strong>
+        </div>
+        <button class="btn text-white fw-bold px-3 py-2 rounded-pill shadow-sm d-flex align-items-center gap-1" 
+                style="background-color: #28a745; transition: transform 0.2s;" 
+                (click)="activeTab = 'financeiro'"
+                onmouseover="this.style.transform='scale(1.05)'" 
+                onmouseout="this.style.transform='scale(1)'">
+          <i class="bi bi-plus-circle"></i> <span class="d-none d-sm-inline">Depositar</span>
+        </button>
       </div>
       
       <div class="d-flex align-items-center gap-2 gap-md-3">
@@ -30,23 +39,30 @@
            <i class="bi bi-person text-secondary fs-5"></i>
         </div>
 
-        <button class="btn btn-light text-danger rounded-circle d-flex justify-content-center align-items-center border shadow-sm" style="width: 38px; height: 38px; transition: all 0.2s;" (click)="logout()" title="Sair da Conta" onmouseover="this.classList.add('bg-danger', 'text-white')" onmouseout="this.classList.remove('bg-danger', 'text-white')">
+        <button class="btn btn-light text-danger rounded-circle d-flex justify-content-center align-items-center border shadow-sm" style="width: 38px; height: 38px;" (click)="logout()">
           <i class="bi bi-box-arrow-right fs-5"></i>
         </button>
       </div>
     </div>
 
     <div class="d-flex justify-content-start justify-content-sm-center gap-3 gap-md-5 py-2 bg-white shadow-sm mb-4 overflow-auto flex-nowrap px-3 px-md-0 w-100" style="border-bottom: 2px solid #f8f9fa;">
-      <span class="py-2 px-2 text-nowrap" 
+      
+      <span *ngIf="userProfile?.role !== 'ADMIN'" class="py-2 px-2 text-nowrap" 
             (click)="activeTab = 'jogo'"
             [style.color]="activeTab === 'jogo' ? '#D95360' : '#6c757d'"
             [style.border-bottom]="activeTab === 'jogo' ? '3px solid #D95360' : 'none'"
             style="cursor: pointer; font-weight: bold;">
         <i class="bi bi-house me-1"></i> Jogo
       </span>
-      <span class="text-muted py-2 px-2 text-nowrap" style="cursor: pointer;" *ngIf="userProfile?.role === 'ADMIN'">
+
+      <span *ngIf="userProfile?.role === 'ADMIN'" class="py-2 px-2 text-nowrap" 
+            (click)="activeTab = 'jogo'"
+            [style.color]="activeTab === 'jogo' ? '#D95360' : '#6c757d'"
+            [style.border-bottom]="activeTab === 'jogo' ? '3px solid #D95360' : 'none'"
+            style="cursor: pointer; font-weight: bold;">
         <i class="bi bi-gear me-1"></i> Gerenciar Sorteios
       </span>
+
       <span class="py-2 px-2 text-nowrap" 
             (click)="activeTab = 'resultados'"
             [style.color]="activeTab === 'resultados' ? '#D95360' : '#6c757d'"
@@ -54,6 +70,7 @@
             style="cursor: pointer; font-weight: bold;">
         <i class="bi bi-trophy me-1"></i> Resultados
       </span>
+
       <span class="py-2 px-2 text-nowrap" 
             (click)="activeTab = 'historico'"
             [style.color]="activeTab === 'historico' ? '#D95360' : '#6c757d'"
@@ -63,12 +80,55 @@
       </span>
     </div>
 
+    <div *ngIf="userProfile?.role === 'ADMIN' && activeTab === 'jogo'" class="px-3 px-md-0">
+      <div class="card border-0 shadow-sm mb-4 rounded-4 overflow-hidden">
+        <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-md-center bg-white p-4 gap-3">
+          <div>
+            <h5 class="fw-bold mb-1">Painel de Controle</h5>
+            <p class="text-muted small mb-0">Gerencie os resultados oficiais do sistema.</p>
+          </div>
+          <button class="btn text-white fw-bold px-4 py-3 py-md-2 rounded-pill shadow w-100 w-md-auto" style="background-color: #D95360; border: none;" (click)="gerarSorteio()">
+            <i class="bi bi-dice-5-fill me-2"></i> Gerar Novo Sorteio
+          </button>
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-5">
+        <div class="card-header bg-white py-3 border-0">
+          <h6 class="fw-bold mb-0 text-secondary">Histórico de Sorteios Gerados</h6>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 text-nowrap text-center">
+              <thead class="table-light">
+                <tr>
+                  <th class="px-4 border-0">Data e Hora</th>
+                  <th class="border-0">1º Prêmio</th>
+                  <th class="border-0">2º Prêmio</th>
+                  <th class="border-0">3º Prêmio</th>
+                  <th class="border-0">4º Prêmio</th>
+                  <th class="border-0">5º Prêmio</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let d of draws">
+                  <td class="px-4 text-muted small">{{ d.drawDate }}</td>
+                  <td><span class="badge rounded-pill px-3 py-2 fs-6 shadow-sm text-white" style="background-color: #D95360 !important;">{{ d.milhar_1 }}</span></td>
+                  <td class="fw-bold text-secondary">{{ d.milhar_2 }}</td>
+                  <td class="fw-bold text-secondary">{{ d.milhar_3 }}</td>
+                  <td class="fw-bold text-secondary">{{ d.milhar_4 }}</td>
+                  <td class="fw-bold text-secondary">{{ d.milhar_5 }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div *ngIf="userProfile?.role !== 'ADMIN' && activeTab === 'jogo'" class="px-3 px-md-0">
-      
       <div class="row g-4">
-        
         <div class="col-12 col-xl-8">
-          
           <div class="game-container mb-4">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3" style="border-bottom: 1px solid #eee;">
               <div>
@@ -79,33 +139,20 @@
                 <h3 class="fw-bold text-dark font-serif mb-1">Faça sua Fé!</h3>
                 <p class="text-muted mb-0 small">Escolha um bicho e defina o valor da sua aposta.</p>
               </div>
-              
               <div class="mt-3 mt-md-0 text-md-end bg-light p-3 rounded-4 border" style="background-color: #fffafb !important; border-color: #ffdde0 !important;">
-                <small class="text-muted fw-bold d-block" style="letter-spacing: 1px;">PRÊMIO ESTIMADO</small>
+                <small class="text-muted fw-bold d-block">PRÊMIO ESTIMADO</small>
                 <h4 class="mb-0 fw-bold" style="color: #D95360;">R$ 25.000,00</h4>
               </div>
             </div>
 
             <div class="row g-4 flex-column-reverse flex-lg-row">
-              
               <div class="col-12 col-lg-7">
                 <div class="row g-2">
                   <div class="col-4 col-sm-3 col-md-3" *ngFor="let item of animalsList">
-                    <div class="animal-card" 
-                         [ngClass]="{'selected-card': selectedAnimal?.group === item.group}"
-                         (click)="selectAnimal(item)">
-                      
-                      <span class="fw-bold mb-1 fs-5" [ngStyle]="{'color': selectedAnimal?.group === item.group ? 'white' : '#888'}">
-                        {{ item.group }}
-                      </span>
-                      
-                      <h6 class="fw-bold mb-1 text-uppercase text-center" style="font-size: 0.75rem;" [ngStyle]="{'color': selectedAnimal?.group === item.group ? 'white' : '#333'}">
-                        {{ item.name }}
-                      </h6>
-                      
-                      <small style="font-size: 0.60rem;" [ngStyle]="{'color': selectedAnimal?.group === item.group ? 'rgba(255,255,255,0.8)' : '#aaa'}">
-                        {{ item.dezenas }}
-                      </small>
+                    <div class="animal-card" [ngClass]="{'selected-card': selectedAnimal?.group === item.group}" (click)="selectAnimal(item)">
+                      <span class="fw-bold mb-1 fs-5" [ngStyle]="{'color': selectedAnimal?.group === item.group ? 'white' : '#888'}">{{ item.group }}</span>
+                      <h6 class="fw-bold mb-1 text-uppercase text-center" style="font-size: 0.75rem;" [ngStyle]="{'color': selectedAnimal?.group === item.group ? 'white' : '#333'}">{{ item.name }}</h6>
+                      <small style="font-size: 0.60rem;" [ngStyle]="{'color': selectedAnimal?.group === item.group ? 'rgba(255,255,255,0.8)' : '#aaa'}">{{ item.dezenas }}</small>
                     </div>
                   </div>
                 </div>
@@ -113,49 +160,35 @@
 
               <div class="col-12 col-lg-5">
                 <div class="p-3 rounded-4" style="background-color: #fafafa; border: 1px solid #eee;">
-                  
                   <div class="text-start">
-                    <label class="small fw-bold text-muted mb-1 text-uppercase" style="font-size: 0.7rem;">TIPO DE APOSTA</label>
+                    <label class="small fw-bold text-muted mb-1 text-uppercase">TIPO DE APOSTA</label>
                     <select class="form-select mb-3 rounded-3 border-0 shadow-sm" [(ngModel)]="betType">
                       <option value="GRUPO">Grupo (Animal)</option>
                       <option value="DEZENA">Dezena</option>
                       <option value="MILHAR">Milhar</option>
                     </select>
-                    
                     <div class="mb-3" *ngIf="betType !== 'GRUPO'">
-                      <label class="small fw-bold text-muted mb-1 text-uppercase" style="font-size: 0.7rem;">NÚMERO ({{betType === 'DEZENA' ? '2' : '4'}} DÍGITOS)</label>
+                      <label class="small fw-bold text-muted mb-1 text-uppercase">NÚMERO ({{betType === 'DEZENA' ? '2' : '4'}} DÍGITOS)</label>
                       <input type="text" class="form-control rounded-3 border-0 shadow-sm fw-bold text-center" maxlength="{{betType === 'DEZENA' ? 2 : 4}}" [(ngModel)]="betNumber" placeholder="----">
                     </div>
-
-                    <div class="d-flex justify-content-between align-items-end mb-1 mt-3">
-                      <label class="small fw-bold text-muted text-uppercase" style="font-size: 0.7rem;">VALOR DA APOSTA</label>
-                      <small class="text-muted" style="font-size: 0.65rem;">Mín: R$ 1,00</small>
-                    </div>
-                    
+                    <label class="small fw-bold text-muted mb-1 text-uppercase">VALOR DA APOSTA</label>
                     <div class="input-group mb-2 shadow-sm rounded-3 overflow-hidden">
                       <span class="input-group-text bg-white border-0 text-secondary">R$</span>
                       <input type="number" class="form-control border-0 ps-0 fw-bold" [(ngModel)]="selectedAmount" placeholder="0,00">
                     </div>
-
                     <div class="d-flex gap-2 mt-2 mb-4">
-                      <button class="btn btn-value-shortcut flex-fill py-1 small" [class.active]="selectedAmount === 5" (click)="setAmountShortcut(5)">R$ 5</button>
-                      <button class="btn btn-value-shortcut flex-fill py-1 small" [class.active]="selectedAmount === 10" (click)="setAmountShortcut(10)">R$ 10</button>
-                      <button class="btn btn-value-shortcut flex-fill py-1 small" [class.active]="selectedAmount === 50" (click)="setAmountShortcut(50)">R$ 50</button>
+                      <button class="btn btn-value-shortcut flex-fill py-1 small" (click)="setAmountShortcut(5)">R$ 5</button>
+                      <button class="btn btn-value-shortcut flex-fill py-1 small" (click)="setAmountShortcut(10)">R$ 10</button>
+                      <button class="btn btn-value-shortcut flex-fill py-1 small" (click)="setAmountShortcut(50)">R$ 50</button>
                     </div>
-
-                    <div class="d-flex justify-content-between align-items-center mb-3 px-1">
-                      <span class="text-muted" style="font-size: 0.8rem;">Potencial:</span>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                      <span class="text-muted small">Potencial:</span>
                       <strong class="text-dark fs-5 fw-bold">{{ getPotencialGanho() | currency:'BRL' }}</strong>
                     </div>
-
-                    <button class="btn w-100 text-white fw-bold py-2 rounded-3 shadow-sm transition-all" 
-                            [style.background-color]="isBetValid() ? '#D95360' : '#e0e0e0'"
-                            [disabled]="!isBetValid()"
-                            (click)="confirmBet()">
+                    <button class="btn w-100 text-white fw-bold py-2 rounded-3 shadow-sm" [style.background-color]="isBetValid() ? '#D95360' : '#e0e0e0'" [disabled]="!isBetValid()" (click)="confirmBet()">
                       Apostar Agora <i class="bi bi-arrow-up-right ms-1"></i>
                     </button>
                   </div>
-
                 </div>
               </div>
             </div>
@@ -183,12 +216,7 @@
                       <td class="fw-bold fs-6">{{ bet.choice }} <small class="text-muted fw-normal">{{ bet.animalName ? '(' + bet.animalName + ')' : '' }}</small></td>
                       <td class="fw-bold">{{ bet.value | currency:'BRL' }}</td>
                       <td>
-                        <span class="badge rounded-pill px-3 py-2 fw-bold" 
-                          [ngClass]="{
-                            'bg-warning-subtle text-warning border border-warning': bet.status === 'PENDENTE', 
-                            'bg-success-subtle text-success border border-success': bet.status === 'GANHOU', 
-                            'bg-danger-subtle text-danger border border-danger': bet.status === 'PERDEU'
-                          }">
+                        <span class="badge rounded-pill px-3 py-2 fw-bold" [ngClass]="{'bg-warning-subtle text-warning border border-warning': bet.status === 'PENDENTE', 'bg-success-subtle text-success border border-success': bet.status === 'GANHOU', 'bg-danger-subtle text-danger border border-danger': bet.status === 'PERDEU'}">
                           {{ bet.status }}
                         </span>
                       </td>
@@ -197,101 +225,64 @@
                 </table>
               </div>
               <div *ngIf="!userBets || userBets.length === 0" class="text-center py-5">
-                <i class="bi bi-inbox text-muted fs-1 opacity-25"></i>
-                <p class="text-muted mt-2 mb-0">Você ainda não realizou nenhuma aposta hoje.</p>
+                <p class="text-muted mt-2 mb-0">Nenhuma aposta realizada hoje.</p>
               </div>
             </div>
           </div>
-        
         </div>
-        
+
         <div class="col-12 col-xl-4">
-          
           <div class="card border-0 shadow-sm rounded-4 mb-4 bg-white" style="border-top: 6px solid #D95360 !important;">
             <div class="card-body p-4">
               <h6 class="fw-bold mb-3 text-dark text-uppercase d-flex align-items-center gap-2" style="font-size: 0.8rem; letter-spacing: 1px;">
                 <i class="bi bi-clock-history" style="color: #D95360;"></i> Horários dos Sorteios
               </h6>
-              
               <ul class="list-group list-group-flush mb-0">
                 <li class="list-group-item px-0 py-2 d-flex justify-content-between align-items-center border-0" *ngFor="let s of sorteiosDoDia">
-                  <span class="fw-bold" [ngClass]="s.realizado ? 'text-muted text-decoration-line-through opacity-50' : 'text-secondary'">
-                    {{ s.nome }}
-                  </span>
-                  <span class="badge rounded-pill px-3" 
-                        [ngClass]="s.realizado ? 'bg-light text-muted border' : 'bg-danger-subtle text-danger border border-danger'">
-                    {{ s.hora }}
-                  </span>
+                  <span class="fw-bold" [ngClass]="s.realizado ? 'text-muted text-decoration-line-through opacity-50' : 'text-secondary'">{{ s.nome }}</span>
+                  <span class="badge rounded-pill px-3" [ngClass]="s.realizado ? 'bg-light text-muted border' : 'bg-danger-subtle text-danger border border-danger'">{{ s.hora }}</span>
                 </li>
               </ul>
             </div>
           </div>
 
           <h6 class="text-muted fw-bold text-uppercase mb-3 px-1" style="font-size: 0.75rem; letter-spacing: 1px;">Estatísticas Gerais</h6>
-          
-          <div class="stat-card shadow-sm">
-            <div class="stat-icon"><i class="bi bi-award"></i></div>
-            <div>
-              <small class="text-muted text-uppercase d-block" style="font-size: 0.65rem; letter-spacing: 0.5px; font-weight: 700;">Vitórias Totais</small>
-              <strong class="fs-5 text-dark">{{ estatisticas.vitoriasTotais }}</strong>
-            </div>
-          </div>
-
-          <div class="stat-card shadow-sm">
-            <div class="stat-icon"><i class="bi bi-graph-up-arrow"></i></div>
-            <div>
-              <small class="text-muted text-uppercase d-block" style="font-size: 0.65rem; letter-spacing: 0.5px; font-weight: 700;">Maior Prêmio</small>
-              <strong class="fs-5 text-dark">{{ estatisticas.maiorPremio | currency:'BRL' }}</strong>
-            </div>
-          </div>
-
-          <div class="stat-card shadow-sm">
-            <div class="stat-icon"><i class="bi bi-fire"></i></div>
-            <div>
-              <small class="text-muted text-uppercase d-block" style="font-size: 0.65rem; letter-spacing: 0.5px; font-weight: 700;">Dias Seguidos</small>
-              <strong class="fs-5 text-dark">{{ estatisticas.diasSeguidos }} Dias</strong>
-            </div>
-          </div>
-
-          <div class="stat-card shadow-sm">
-            <div class="stat-icon"><i class="bi bi-wallet2"></i></div>
-            <div>
-              <small class="text-muted text-uppercase d-block" style="font-size: 0.65rem; letter-spacing: 0.5px; font-weight: 700;">Total Ganhos</small>
-              <strong class="fs-5 text-dark">{{ estatisticas.totalGanhos | currency:'BRL' }}</strong>
-            </div>
-          </div>
+          <div class="stat-card shadow-sm mb-2"><div class="stat-icon"><i class="bi bi-award"></i></div><div><small class="text-muted text-uppercase d-block" style="font-size: 0.65rem;">Vitórias</small><strong>{{ estatisticas.vitoriasTotais }}</strong></div></div>
+          <div class="stat-card shadow-sm mb-2"><div class="stat-icon"><i class="bi bi-graph-up-arrow"></i></div><div><small class="text-muted text-uppercase d-block" style="font-size: 0.65rem;">Maior Prêmio</small><strong>{{ estatisticas.maiorPremio | currency:'BRL' }}</strong></div></div>
+          <div class="stat-card shadow-sm mb-2"><div class="stat-icon"><i class="bi bi-wallet2"></i></div><div><small class="text-muted text-uppercase d-block" style="font-size: 0.65rem;">Total Ganhos</small><strong>{{ estatisticas.totalGanhos | currency:'BRL' }}</strong></div></div>
 
           <div class="dica-card shadow-sm mt-4 mb-5">
-            <div class="d-flex align-items-center gap-2 mb-2">
-              <i class="bi bi-lightbulb-fill text-danger fs-5" style="color: #D95360 !important;"></i>
-              <h6 class="fw-bold mb-0 text-dark">Dica de hoje</h6>
-            </div>
+            <div class="d-flex align-items-center gap-2 mb-2"><i class="bi bi-lightbulb-fill text-danger fs-5"></i><h6 class="fw-bold mb-0 text-dark">Dica de hoje</h6></div>
             <p class="text-muted small mb-0 lh-sm">{{ dicaDeHoje }}</p>
-            <i class="bi bi-ticket-detailed position-absolute opacity-25" style="color: #D95360; font-size: 5rem; right: -15px; bottom: -20px;"></i>
           </div>
-
         </div>
-
       </div>
     </div>
 
-    <div *ngIf="activeTab === 'historico' && userProfile?.role !== 'ADMIN'" class="px-3 px-md-5 pb-5">
+    <div *ngIf="activeTab === 'historico'" class="px-3 px-md-5 pb-5">
       <div class="card border-0 shadow-sm rounded-4 overflow-hidden" style="border-top: 6px solid #D95360 !important;">
         <div class="card-header bg-white py-4 border-0">
-          <h4 class="fw-bold mb-0 text-dark"><i class="bi bi-clock-history text-danger me-2"></i> Todo o seu Histórico</h4>
-          <p class="text-muted small mb-0">Confira abaixo todos os seus jogos realizados na plataforma.</p>
+          <h4 class="fw-bold mb-0 text-dark"><i class="bi bi-clock-history text-danger me-2"></i> {{ userProfile?.role === 'ADMIN' ? 'Todos os Sorteios' : 'Todo o seu Histórico' }}</h4>
+          <p class="text-muted small mb-0">Confira abaixo todos os registros do sistema.</p>
         </div>
         <div class="card-body p-0">
           <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0 text-nowrap">
+            <table *ngIf="userProfile?.role === 'ADMIN'" class="table table-hover align-middle mb-0 text-nowrap text-center">
               <thead class="table-light">
-                <tr>
-                  <th class="px-4 border-0">Tipo</th>
-                  <th class="border-0">Escolha</th>
-                  <th class="border-0">Valor</th>
-                  <th class="border-0">Status</th>
-                  <th class="border-0">Prêmio</th>
+                <tr><th>Data</th><th>1º Prêmio</th><th>2º</th><th>3º</th><th>4º</th><th>5º</th></tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let d of draws">
+                  <td>{{ d.drawDate }}</td>
+                  <td><span class="badge bg-danger px-3">{{ d.milhar_1 }}</span></td>
+                  <td>{{ d.milhar_2 }}</td><td>{{ d.milhar_3 }}</td><td>{{ d.milhar_4 }}</td><td>{{ d.milhar_5 }}</td>
                 </tr>
+              </tbody>
+            </table>
+
+            <table *ngIf="userProfile?.role !== 'ADMIN'" class="table table-hover align-middle mb-0 text-nowrap">
+              <thead class="table-light">
+                <tr><th>Tipo</th><th>Escolha</th><th>Valor</th><th>Status</th><th>Prêmio</th></tr>
               </thead>
               <tbody>
                 <tr *ngFor="let bet of userBets">
@@ -308,84 +299,104 @@
               </tbody>
             </table>
           </div>
-          <div *ngIf="!userBets || userBets.length === 0" class="text-center py-5">
-            <p class="text-muted">Nenhuma aposta encontrada.</p>
-          </div>
         </div>
       </div>
     </div>
 
-    <div *ngIf="activeTab === 'resultados' && userProfile?.role !== 'ADMIN'" class="px-3 px-md-5 pb-5">
+    <div *ngIf="activeTab === 'resultados'" class="px-3 px-md-5 pb-5">
       <div class="mb-4">
         <h4 class="fw-bold text-dark"><i class="bi bi-trophy text-danger me-2"></i> Resultados Oficiais</h4>
         <p class="text-muted small">Confira os números sorteados recentemente.</p>
       </div>
-
       <div class="row g-4">
         <div class="col-12 col-md-6 col-xl-4" *ngFor="let d of draws">
           <div class="card border-0 shadow-sm rounded-4 h-100 resultado-card" style="background-color: #fafafa; border: 1px solid #eee;">
-            
             <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center rounded-top-4">
               <span class="badge rounded-pill" style="background-color: #ffdde0; color: #D95360;">Sorteio</span>
               <small class="text-muted fw-bold"><i class="bi bi-calendar3 me-1"></i> {{ d.drawDate }}</small>
             </div>
-            
             <div class="card-body p-4 text-center">
               <div class="mb-4">
-                <small class="text-muted text-uppercase d-block fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 1px;">1º Prêmio</small>
+                <small class="text-muted text-uppercase d-block fw-bold mb-1" style="font-size: 0.7rem;">1º Prêmio</small>
                 <div class="d-inline-block py-2 px-4 rounded-pill shadow-sm" style="background-color: #D95360; color: white;">
                   <h3 class="fw-bold mb-0" style="letter-spacing: 3px;">{{ d.milhar_1 }}</h3>
                 </div>
               </div>
-
               <div class="row g-2 text-muted fw-bold">
-                <div class="col-6">
-                  <div class="bg-white p-2 rounded-3 border shadow-sm premio-secundario">
-                    <small class="d-block" style="font-size: 0.65rem;">2º PRÊMIO</small>
-                    <span class="fs-6">{{ d.milhar_2 }}</span>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="bg-white p-2 rounded-3 border shadow-sm premio-secundario">
-                    <small class="d-block" style="font-size: 0.65rem;">3º PRÊMIO</small>
-                    <span class="fs-6">{{ d.milhar_3 }}</span>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="bg-white p-2 rounded-3 border shadow-sm premio-secundario">
-                    <small class="d-block" style="font-size: 0.65rem;">4º PRÊMIO</small>
-                    <span class="fs-6">{{ d.milhar_4 }}</span>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="bg-white p-2 rounded-3 border shadow-sm premio-secundario">
-                    <small class="d-block" style="font-size: 0.65rem;">5º PRÊMIO</small>
-                    <span class="fs-6">{{ d.milhar_5 }}</span>
-                  </div>
-                </div>
+                <div class="col-6"><div class="bg-white p-2 rounded-3 border shadow-sm premio-secundario"><small class="d-block" style="font-size: 0.65rem;">2º</small><span>{{ d.milhar_2 }}</span></div></div>
+                <div class="col-6"><div class="bg-white p-2 rounded-3 border shadow-sm premio-secundario"><small class="d-block" style="font-size: 0.65rem;">3º</small><span>{{ d.milhar_3 }}</span></div></div>
+                <div class="col-6"><div class="bg-white p-2 rounded-3 border shadow-sm premio-secundario"><small class="d-block" style="font-size: 0.65rem;">4º</small><span>{{ d.milhar_4 }}</span></div></div>
+                <div class="col-6"><div class="bg-white p-2 rounded-3 border shadow-sm premio-secundario"><small class="d-block" style="font-size: 0.65rem;">5º</small><span>{{ d.milhar_5 }}</span></div></div>
               </div>
-
             </div>
           </div>
         </div>
       </div>
-      
-      <div *ngIf="!draws || draws.length === 0" class="text-center py-5">
-        <i class="bi bi-calendar-x text-muted fs-1 opacity-25"></i>
-        <p class="text-muted mt-2">Nenhum sorteio foi registrado ainda.</p>
-      </div>
     </div>
 
-    <div *ngIf="userProfile?.role === 'ADMIN'" class="px-3 px-md-0">
-       <div class="card border-0 shadow-sm mb-4 rounded-4 overflow-hidden">
-        <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-md-center bg-white p-4 gap-3">
-          <div>
-            <h5 class="fw-bold mb-1">Painel de Controle</h5>
-            <p class="text-muted small mb-0">Gerencie os resultados oficiais do sistema.</p>
+    <div *ngIf="activeTab === 'financeiro' && userProfile?.role !== 'ADMIN'" class="px-3 px-md-5 pb-5">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+          
+          <div class="card border-0 shadow-sm rounded-4 overflow-hidden" style="border-top: 6px solid #28a745 !important;" *ngIf="!pixGenerated">
+            <div class="card-body p-4 p-md-5 text-center">
+              <div class="mb-4">
+                <div class="rounded-circle bg-success bg-opacity-10 d-inline-flex justify-content-center align-items-center mb-3" style="width: 80px; height: 80px;">
+                  <i class="bi bi-wallet2 text-success" style="font-size: 2.5rem;"></i>
+                </div>
+                <h3 class="fw-bold text-dark">Adicionar Saldo</h3>
+                <p class="text-muted small">Insira fundos via PIX de forma instantânea para continuar jogando.</p>
+              </div>
+
+              <div class="text-start mb-4">
+                <label class="small fw-bold text-muted mb-2 text-uppercase">Valor do Depósito</label>
+                <div class="input-group input-group-lg mb-3 shadow-sm rounded-3 overflow-hidden border">
+                  <span class="input-group-text bg-white border-0 text-secondary">R$</span>
+                  <input type="number" class="form-control border-0 ps-0 fw-bold text-dark" [(ngModel)]="depositAmount" placeholder="0,00">
+                </div>
+                
+                <div class="d-flex gap-2">
+                  <button class="btn btn-outline-success flex-fill py-2 fw-bold rounded-3" (click)="setDepositAmount(20)">R$ 20</button>
+                  <button class="btn btn-outline-success flex-fill py-2 fw-bold rounded-3" (click)="setDepositAmount(50)">R$ 50</button>
+                  <button class="btn btn-outline-success flex-fill py-2 fw-bold rounded-3" (click)="setDepositAmount(100)">R$ 100</button>
+                </div>
+              </div>
+
+              <button class="btn w-100 text-white fw-bold py-3 rounded-3 shadow-sm mb-3 d-flex justify-content-center align-items-center gap-2" 
+                      style="background-color: #28a745; transition: all 0.2s;"
+                      [disabled]="depositAmount < 1"
+                      (click)="generatePix()">
+                <i class="bi bi-qr-code-scan"></i> Gerar PIX
+              </button>
+              <small class="text-muted d-block mt-3"><i class="bi bi-shield-lock me-1 text-success"></i> Ambiente seguro e protegido.</small>
+            </div>
           </div>
-          <button class="btn text-white fw-bold px-4 py-3 py-md-2 rounded-pill shadow w-100 w-md-auto" style="background-color: #D95360; border: none;" (click)="gerarSorteio()">
-            <i class="bi bi-dice-5-fill me-2"></i> Gerar Novo Sorteio
-          </button>
+
+          <div class="card border-0 shadow-sm rounded-4 overflow-hidden" style="border-top: 6px solid #28a745 !important;" *ngIf="pixGenerated">
+            <div class="card-body p-4 p-md-5 text-center">
+              <h4 class="fw-bold text-dark mb-1">PIX Gerado!</h4>
+              <p class="text-muted small mb-4">Escaneie o QR Code ou copie o código abaixo para pagar <strong>{{ depositAmount | currency:'BRL' }}</strong>.</p>
+              
+              <div class="bg-light p-3 rounded-4 mb-4 mx-auto d-flex align-items-center justify-content-center" style="width: 200px; height: 200px; border: 2px dashed #ccc;">
+                <i class="bi bi-qr-code text-muted opacity-25" style="font-size: 8rem; line-height: 1;"></i>
+              </div>
+
+              <div class="text-start mb-4">
+                <label class="small fw-bold text-muted mb-2 text-uppercase">Pix Copia e Cola</label>
+                <div class="input-group mb-3 shadow-sm rounded-3">
+                  <input type="text" class="form-control bg-light text-muted border-success border-opacity-25" [value]="pixCode" readonly>
+                  <button class="btn btn-success px-4" type="button" (click)="copyPix()" title="Copiar Código"><i class="bi bi-copy"></i></button>
+                </div>
+              </div>
+
+              <button class="btn w-100 text-white fw-bold py-3 rounded-3 shadow-sm mb-3 d-flex justify-content-center align-items-center gap-2" style="background-color: #28a745;" (click)="simulatePayment()">
+                <i class="bi bi-check-circle-fill"></i> Simular Pagamento Realizado
+              </button>
+              
+              <button class="btn btn-link text-muted text-decoration-none w-100 small" (click)="pixGenerated = false">Cancelar e voltar</button>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
