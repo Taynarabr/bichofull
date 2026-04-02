@@ -194,3 +194,37 @@
   color: #d85663 !important;
   transform: scale(1.03);
 }
+footer {
+  /* Garante que o footer sempre fique no fundo se a página tiver pouco conteúdo */
+  margin-top: auto; 
+}
+
+footer h6 {
+  color: #333;
+  letter-spacing: 0.5px;
+}
+
+footer ul li:hover {
+  color: #D95360 !important;
+  text-decoration: underline;
+}
+
+/* Efeito no botão de sair do rodapé */
+footer .btn-outline-danger {
+  transition: all 0.3s ease;
+}
+
+footer .btn-outline-danger:hover {
+  background-color: #D95360;
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(217, 83, 96, 0.2);
+}
+
+footer .container {
+  max-width: 1200px;
+}
+
+.logo-icon i {
+  line-height: 1;
+}

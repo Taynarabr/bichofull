@@ -44,9 +44,7 @@
            <i class="bi bi-person text-secondary fs-5"></i>
         </div>
 
-        <button class="btn btn-light text-danger rounded-circle d-flex justify-content-center align-items-center border shadow-sm" style="width: 38px; height: 38px;" (click)="logout()">
-          <i class="bi bi-box-arrow-right fs-5"></i>
-        </button>
+        
       </div>
     </div>
 
@@ -524,5 +522,68 @@
       </div>
     </div>
 
-  </div> 
+  </div>
+  <footer class="bg-white border-top mt-5 py-5 w-100">
+    <div class="container">
+      <div class="row g-4 text-start">
+        
+        <div class="col-12 col-md-4">
+          <h5 class="fw-bold text-danger mb-3"><i class="bi bi-diamond-fill"></i> Jogo do Bicho Full</h5>
+          <p class="text-muted small">Resultados em tempo real, transparência total e pagamentos via PIX instantâneo.</p>
+          <div class="d-flex gap-3 fs-5 text-muted">
+            <i class="bi bi-instagram" style="cursor:pointer"></i>
+            <i class="bi bi-telegram" style="cursor:pointer"></i>
+            <i class="bi bi-whatsapp" style="cursor:pointer"></i>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-2">
+          <h6 class="fw-bold mb-3">Navegação</h6>
+          <ul class="list-unstyled small text-muted d-flex flex-column gap-2">
+            <li (click)="activeTab = 'jogo'; scrollToTop()" style="cursor:pointer">Jogar</li>
+            <li (click)="activeTab = 'resultados'; scrollToTop()" style="cursor:pointer">Resultados</li>
+            <li (click)="activeTab = 'historico'; scrollToTop()" style="cursor:pointer">Minhas Apostas</li>
+            <li (click)="activeTab = 'financeiro'; scrollToTop()" style="cursor:pointer">Saldo</li>
+          </ul>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <h6 class="fw-bold mb-3">Ajuda & Regras</h6>
+          <ul class="list-unstyled small text-muted d-flex flex-column gap-2">
+            <li (click)="verRegras()" style="cursor:pointer">Como Apostar?</li>
+            <li (click)="verTabelaPremios()" style="cursor:pointer">Tabela de Prêmios</li>
+            <li (click)="contatoSuporte()" style="cursor:pointer">Suporte ao Cliente</li>
+            <li (click)="verTermosUso()" style="cursor:pointer">Termos de Uso</li>
+          </ul>
+        </div>
+
+        <div class="col-12 col-md-3 text-md-end">
+          <h6 class="fw-bold mb-3">Gestão da Conta</h6>
+          <div class="p-3 bg-light rounded-4 mb-3 text-start text-md-end border border-opacity-10">
+            <small class="text-muted d-block">Logado como:</small>
+            <strong class="text-dark d-block">{{ userProfile?.name }}</strong>
+            <small class="text-muted small d-block">{{ userProfile?.email }}</small>
+          </div>
+          
+          <button class="btn btn-outline-danger d-inline-flex align-items-center gap-2 px-4 py-2" 
+                  (click)="logout()" 
+                  style="border-radius: 12px; font-weight: 600; border-width: 2px;">
+            <i class="bi bi-box-arrow-right"></i>
+            Encerrar Sessão
+          </button>
+        </div>
+
+      </div>
+
+      <hr class="my-4 opacity-10">
+      
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+        <p class="text-muted mb-0" style="font-size: 0.75rem;">&copy; 2026 Jogo do Bicho Full. Jogue com responsabilidade. Proibido para menores de 18 anos.</p>
+        <div class="d-flex align-items-center gap-2 text-muted">
+          <i class="bi bi-shield-lock-fill text-success"></i>
+          <span style="font-size: 0.75rem;">Conexão Segura SSL</span>
+        </div>
+      </div>
+    </div>
+  </footer>
 </div>

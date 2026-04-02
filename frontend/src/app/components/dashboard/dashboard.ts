@@ -394,4 +394,52 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  verRegras() {
+    Swal.fire({
+      title: 'Como funciona?',
+      text: 'O Jogo do Bicho Online permite que você aposte em seus animais favoritos de forma simples. Escolha o bicho, a milhar ou dezena, defina o valor e aguarde o sorteio em tempo real!',
+      icon: 'question',
+      confirmButtonColor: '#D95360',
+      confirmButtonText: 'Entendido!'
+    });
+  }
+
+  contatoSuporte() {
+    window.open('https://wa.me/5500000000000', '_blank');
+  }
+
+  // Adicione estas funções no seu DashboardComponent
+
+  scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  verTabelaPremios() {
+    Swal.fire({
+      title: 'Tabela de Prêmios',
+      html: `
+        <div style="text-align: left; font-size: 0.9rem;">
+          <p><strong>• Grupo (Animal):</strong> Paga 18x o valor apostado.</p>
+          <p><strong>• Dezena:</strong> Paga 60x o valor apostado.</p>
+          <p><strong>• Centena:</strong> Paga 600x o valor apostado.</p>
+          <p><strong>• Milhar:</strong> Paga 4.000x o valor apostado.</p>
+          <hr>
+          <small class="text-muted">*Valores baseados na aposta simples para o 1º prêmio.</small>
+        </div>
+      `,
+      icon: 'info',
+      confirmButtonColor: '#D95360',
+      confirmButtonText: 'Entendi'
+    });
+  }
+
+  verTermosUso() {
+    Swal.fire({
+      title: 'Termos de Uso',
+      text: 'Ao utilizar o Bicho Full, você declara ter mais de 18 anos. O uso da plataforma é para fins de entretenimento e o usuário é responsável pela gestão de seu saldo. Jogos podem causar vício, jogue com responsabilidade.',
+      icon: 'info',
+      confirmButtonColor: '#D95360'
+    });
+  }
 }
