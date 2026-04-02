@@ -54,6 +54,17 @@ public class UserService {
         
         return new AuthResponseDTO(token, user.getId(), user.getNome(), user.getEmail(), user.getRole());
     }
+
+    // ==========================================
+    // REDEFINIR SENHA (ESQUECI A SENHA)
+    // ==========================================
+    public void resetPassword(String email, String newPassword) {
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new ResourceNotFoundException("E-mail não encontrado no sistema."));
+        
+        user.setSenha(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
     
     public void debitBalance(Long userId, BigDecimal amount) {
         User user = findUserById(userId);
@@ -135,7 +146,7 @@ public class UserService {
     }
 
     // ==========================================
-    // DEPÓSITO PIX
+    // FINANCEIRO (DEPÓSITO E SAQUE)
     // ==========================================
     public UserResponseDTO deposit(Long userId, BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
@@ -149,9 +160,6 @@ public class UserService {
         return toDTO(savedUser); 
     }
 
-    // ==========================================
-    // SAQUE PIX
-    // ==========================================
     public UserResponseDTO withdraw(Long userId, BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("O valor do saque deve ser maior que zero.");

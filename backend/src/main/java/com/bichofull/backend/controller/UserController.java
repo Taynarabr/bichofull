@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Map;
 import java.math.BigDecimal;
 
 @RestController
@@ -77,5 +78,19 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> withdraw(@PathVariable Long id, @RequestParam BigDecimal amount) {
         UserResponseDTO updatedUser = userService.withdraw(id, amount);
         return ResponseEntity.ok(updatedUser);
+    }
+
+    // Rota de Reset de Senha corrigida para retornar JSON
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestParam String email, @RequestParam String newPassword) {
+        try {
+            userService.resetPassword(email, newPassword);
+            // Retornamos um objeto JSON com a chave "message"
+            return ResponseEntity.ok(Map.of("message", "Senha alterada com sucesso!"));
+        } catch (Exception e) {
+            // Retornamos um erro 400 com a mensagem da exceção em formato JSON
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                 .body(Map.of("message", e.getMessage()));
+        }
     }
 }

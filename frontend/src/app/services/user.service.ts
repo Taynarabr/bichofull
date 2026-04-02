@@ -40,4 +40,8 @@ export class UserService {
   withdraw(userId: number, amount: number): Observable<UserProfile> {
     return this.http.post<UserProfile>(`${this.apiUrl}/${userId}/withdraw?amount=${amount}`, {});
   }
+
+  resetPassword(email: string, password: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/reset-password?email=${email}&newPassword=${password}`, {});
+  }
 }
