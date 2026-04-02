@@ -168,3 +168,29 @@
   position: relative;
   overflow: hidden;
 }
+
+/* =========================================
+   RESULTADOS OFICIAIS (NOVO)
+   ========================================= */
+
+/* Animação para os cards de resultados */
+.resultado-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.resultado-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 25px rgba(217, 83, 96, 0.12) !important;
+}
+
+/* Efeito de destaque para os prêmios menores ao passar o mouse */
+.premio-secundario {
+  transition: all 0.2s;
+}
+
+.premio-secundario:hover {
+  background-color: #fff5f6 !important;
+  border-color: #D95360 !important;
+  color: #D95360 !important;
+  transform: scale(1.03);
+}

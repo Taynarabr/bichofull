@@ -20,7 +20,6 @@ export class DashboardComponent implements OnInit {
   userBets: any[] = []; 
   isLoading = true;
 
-  // Identificador da aba ativa
   activeTab: string = 'jogo';
 
   betType: string = 'GRUPO'; 
@@ -70,7 +69,6 @@ export class DashboardComponent implements OnInit {
     return this.sorteiosDoDia.find(s => !s.realizado) || this.sorteiosDoDia[0];
   }
 
-  // Filtra apenas as 3 apostas mais recentes para a home
   get ultimasTresApostas() {
     return this.userBets ? this.userBets.slice(0, 3) : [];
   }
@@ -113,7 +111,7 @@ export class DashboardComponent implements OnInit {
   listarSorteios() {
     this.drawService.findAll().subscribe({
       next: (data) => {
-        this.draws = data;
+        this.draws = data.reverse(); 
         this.cdr.detectChanges();
       }
     });
@@ -122,7 +120,7 @@ export class DashboardComponent implements OnInit {
   carregarApostas(userId: number) {
     this.betService.getUserBets(userId).subscribe({
       next: (data) => {
-        this.userBets = data;
+        this.userBets = data.reverse(); 
         this.cdr.detectChanges();
       }
     });
