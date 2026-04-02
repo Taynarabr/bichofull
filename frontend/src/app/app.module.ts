@@ -9,6 +9,7 @@ registerLocaleData(localePt);
 
 import { AppRoutingModule } from './app-routing-module';
 import { AppComponent } from './app';
+import { HomeComponent } from './components/home/home';
 import { LoginComponent } from './components/login/login';
 import { RegisterComponent } from './components/register/register';
 import { DashboardComponent } from './components/dashboard/dashboard';
@@ -21,6 +22,7 @@ import { BetService } from './services/bet.service';
 @NgModule({
   declarations: [
     AppComponent,
+    HomeComponent,
     LoginComponent,
     RegisterComponent,
     DashboardComponent,

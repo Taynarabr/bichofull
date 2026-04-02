@@ -1,0 +1,102 @@
+<div class="main-wrapper">
+  <header class="d-flex justify-content-between align-items-center px-4 py-3 bg-white border-bottom shadow-sm">
+    <div class="logo d-flex align-items-center gap-2">
+      <div class="logo-icon"><i class="bi bi-lightning-fill"></i></div>
+      <h4 class="mb-0 fw-bold text-danger">Jogo do Bicho</h4>
+    </div>
+    <div class="d-flex gap-3 align-items-center text-muted small">
+      <span><i class="bi bi-globe"></i> PT</span>
+      <i class="bi bi-question-circle"></i>
+    </div>
+  </header>
+
+  <div class="container mt-5">
+    <div class="row align-items-center">
+      <div class="col-lg-6 pe-lg-5 mb-5 mb-lg-0">
+        <span class="badge rounded-pill bg-danger-subtle text-danger px-3 py-2 mb-3">BÔNUS DE BOAS-VINDAS • Ganhe 100% no 1º depósito</span>
+        <h1 class="display-3 fw-bold lh-1 mb-4">
+          O jeito mais <span class="text-danger">fácil e seguro</span> de jogar online.
+        </h1>
+        <p class="text-muted fs-5 mb-5">
+          Experimente a emoção do Jogo do Bicho com a conveniência digital. Resultados em tempo real, saques instantâneos e a maior comunidade de jogadores do Brasil.
+        </p>
+        <div class="d-flex gap-3 mb-5">
+          <button class="btn btn-danger btn-lg px-4 rounded-3 shadow-sm">Jogar Agora <i class="bi bi-arrow-right-short"></i></button>
+          <button class="btn btn-outline-secondary btn-lg px-4 rounded-3">Saiba mais</button>
+        </div>
+        
+        <div class="row g-4">
+          <div class="col-6 d-flex align-items-center gap-3">
+            <div class="feature-icon"><i class="bi bi-phone"></i></div>
+            <div><strong class="d-block small">App Mobile</strong><small class="text-muted">Jogue em qualquer lugar.</small></div>
+          </div>
+          <div class="col-6 d-flex align-items-center gap-3">
+            <div class="feature-icon"><i class="bi bi-lock"></i></div>
+            <div><strong class="d-block small">Saque Rápido</strong><small class="text-muted">Receba via PIX em minutos.</small></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-5 offset-lg-1">
+        <div class="auth-card p-4 p-md-5 shadow-lg bg-white rounded-4 border">
+          <div class="text-center mb-4">
+            <h3 class="fw-bold">{{ isLoginTab ? 'Bem-vindo de volta' : 'Crie sua conta' }}</h3>
+            <p class="text-muted small">Preencha os dados para continuar</p>
+          </div>
+
+          <div class="tab-switcher d-flex p-1 bg-light rounded-3 mb-4">
+            <button class="btn flex-fill py-2 fw-bold" [class.bg-white]="isLoginTab" [class.shadow-sm]="isLoginTab" (click)="toggleTab(true)">Entrar</button>
+            <button class="btn flex-fill py-2 fw-bold" [class.bg-white]="!isLoginTab" [class.shadow-sm]="!isLoginTab" (click)="toggleTab(false)">Cadastrar</button>
+          </div>
+
+          <form (ngSubmit)="handleAuth()">
+            <div class="mb-3" *ngIf="!isLoginTab">
+              <label class="form-label small fw-bold">Nome completo</label>
+              <input type="text" class="form-control rounded-3 py-2" placeholder="Seu nome" [(ngModel)]="formData.name" name="name">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-bold">E-mail</label>
+              <input type="email" class="form-control rounded-3 py-2" placeholder="nome@exemplo.com" [(ngModel)]="formData.email" name="email" required>
+            </div>
+
+            <div class="mb-3">
+              <div class="d-flex justify-content-between">
+                <label class="form-label small fw-bold">Senha</label>
+                <a href="javascript:void(0)" class="text-danger small text-decoration-none" *ngIf="isLoginTab">Esqueceu a senha?</a>
+              </div>
+              <input type="password" class="form-control rounded-3 py-2" placeholder="••••••••" [(ngModel)]="formData.password" name="password" required>
+            </div>
+
+            <div class="form-check mb-4 small" *ngIf="isLoginTab">
+              <input class="form-check-input" type="checkbox" id="remember">
+              <label class="form-check-label text-muted" for="remember">Lembrar-me neste dispositivo</label>
+            </div>
+
+            <button type="submit" class="btn btn-danger w-100 py-2 fw-bold rounded-3 mb-3 shadow-sm" [disabled]="isLoading">
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+              {{ isLoginTab ? 'Entrar na Conta' : 'Criar minha conta' }}
+            </button>
+
+            <div class="text-center position-relative my-4">
+              <hr><span class="bg-white px-2 small text-muted position-absolute top-50 start-50 translate-middle">OU ENTRE COM</span>
+            </div>
+
+            <div class="d-flex justify-content-center gap-3 mb-4">
+              <button type="button" class="btn btn-outline-light border rounded-circle shadow-sm p-0 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                <i class="bi bi-google text-dark"></i>
+              </button>
+              <button type="button" class="btn btn-outline-light border rounded-circle shadow-sm p-0 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                <i class="bi bi-facebook text-primary"></i>
+              </button>
+            </div>
+
+            <div class="text-center">
+              <a href="javascript:void(0)" class="text-muted small text-decoration-none"><i class="bi bi-person me-1"></i> Entrar como convidado</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,70 @@
+.main-wrapper {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.logo-icon {
+  background-color: #D95360;
+  color: white;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+h1 {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  letter-spacing: -1px;
+}
+
+.feature-icon {
+  background: white;
+  color: #D95360;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  font-size: 1.2rem;
+}
+
+.auth-card {
+  border-color: #eee !important;
+}
+
+.tab-switcher {
+  border: 1px solid #eee;
+}
+
+.tab-switcher .btn {
+  border: none;
+  font-size: 0.9rem;
+  color: #666;
+  transition: all 0.2s;
+}
+
+.tab-switcher .bg-white {
+  color: #D95360 !important;
+}
+
+.form-control:focus {
+  border-color: #D95360;
+  box-shadow: 0 0 0 0.25rem rgba(217, 83, 96, 0.1);
+}
+
+.btn-danger {
+  background-color: #D95360;
+  border: none;
+}
+
+.btn-danger:hover {
+  background-color: #c44b56;
+}
+
+.btn-danger:disabled {
+  background-color: #e0e0e0;
+}
