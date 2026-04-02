@@ -35,7 +35,12 @@
           <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
         </div>
         
-        <div class="rounded-circle bg-light d-flex justify-content-center align-items-center border shadow-sm ms-2" style="width: 38px; height: 38px; cursor: pointer;" title="Meu Perfil">
+        <div class="rounded-circle bg-light d-flex justify-content-center align-items-center border shadow-sm ms-2" 
+             style="width: 38px; height: 38px; cursor: pointer; transition: 0.2s;" 
+             title="Meu Perfil"
+             onmouseover="this.classList.add('bg-secondary-subtle')"
+             onmouseout="this.classList.remove('bg-secondary-subtle')"
+             (click)="abrirPerfil()">
            <i class="bi bi-person text-secondary fs-5"></i>
         </div>
 
@@ -77,6 +82,13 @@
             [style.border-bottom]="activeTab === 'historico' ? '3px solid #D95360' : 'none'"
             style="cursor: pointer; font-weight: bold;">
         <i class="bi bi-clock-history me-1"></i> Histórico
+      </span>
+      
+      <span *ngIf="activeTab === 'perfil'" class="py-2 px-2 text-nowrap" 
+            [style.color]="'#D95360'"
+            [style.border-bottom]="'3px solid #D95360'"
+            style="cursor: pointer; font-weight: bold;">
+        <i class="bi bi-person-circle me-1"></i> Perfil
       </span>
     </div>
 
@@ -397,6 +409,52 @@
             </div>
           </div>
 
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="activeTab === 'perfil'" class="px-3 px-md-5 pb-5">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+          <div class="card border-0 shadow-sm rounded-4 overflow-hidden" style="border-top: 6px solid #6c757d !important;">
+            <div class="card-body p-4 p-md-5">
+              
+              <div class="text-center mb-4">
+                <div class="position-relative d-inline-block mb-3">
+                  <div class="rounded-circle bg-secondary bg-opacity-10 d-flex justify-content-center align-items-center" style="width: 100px; height: 100px;">
+                    <i class="bi bi-person-fill text-secondary" style="font-size: 4rem;"></i>
+                  </div>
+                  <div class="position-absolute bottom-0 end-0 bg-white rounded-circle border p-2 shadow-sm d-flex justify-content-center align-items-center" style="width: 35px; height: 35px; cursor: pointer;">
+                    <i class="bi bi-camera-fill text-muted"></i>
+                  </div>
+                </div>
+                <h4 class="fw-bold text-dark mb-0">Configurações da Conta</h4>
+                <p class="text-muted small">Mantenha seus dados atualizados para sua segurança.</p>
+              </div>
+
+              <form (ngSubmit)="saveProfile()">
+                <div class="mb-3">
+                  <label class="small fw-bold text-muted mb-1 text-uppercase">Nome Completo</label>
+                  <input type="text" class="form-control rounded-3 border bg-light" [(ngModel)]="editProfileData.name" name="name" required>
+                </div>
+
+                <div class="mb-3">
+                  <label class="small fw-bold text-muted mb-1 text-uppercase">E-mail</label>
+                  <input type="email" class="form-control rounded-3 border bg-light" [(ngModel)]="editProfileData.email" name="email" required>
+                </div>
+
+                <div class="mb-4">
+                  <label class="small fw-bold text-muted mb-1 text-uppercase">Nova Senha</label>
+                  <input type="password" class="form-control rounded-3 border bg-light" [(ngModel)]="editProfileData.password" name="password" placeholder="Deixe em branco para não alterar">
+                </div>
+
+                <button type="submit" class="btn w-100 text-white fw-bold py-3 rounded-3 shadow-sm d-flex justify-content-center align-items-center gap-2" style="background-color: #6c757d;" [disabled]="!editProfileData.name || !editProfileData.email">
+                  <i class="bi bi-save2"></i> Salvar Alterações
+                </button>
+              </form>
+
+            </div>
+          </div>
         </div>
       </div>
     </div>

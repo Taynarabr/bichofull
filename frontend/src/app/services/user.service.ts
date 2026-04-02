@@ -23,10 +23,11 @@ export class UserService {
     return this.http.get<UserProfile>(`${this.apiUrl}/${id}`);
   }
 
-  // ==========================================
-  // NOVA ROTA: DEPÓSITO (PIX)
-  // ==========================================
   deposit(userId: number, amount: number): Observable<UserProfile> {
     return this.http.post<UserProfile>(`${this.apiUrl}/${userId}/deposit?amount=${amount}`, {});
+  }
+
+  updateUser(id: number, userData: any): Observable<UserProfile> {
+    return this.http.put<UserProfile>(`${this.apiUrl}/${id}`, userData);
   }
 }

@@ -1,11 +1,12 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; 
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core'; 
 import { UserService } from '../../services/user.service';
 import { UserProfile } from '../../models/user.model';
 import { DrawService } from '../../services/draw.service';
 import { BetService } from '../../services/bet.service';
 import { Draw } from '../../models/draw.model';
 import { Router } from '@angular/router';
-import Swal from 'sweetalert2'; // <-- IMPORTAÇÃO DO SWEETALERT AQUI
+import Swal from 'sweetalert2'; 
+import { interval, Subscription } from 'rxjs'; 
 
 interface Animal { name: string; group: string; icon: string; dezenas: string; }
 
@@ -15,11 +16,13 @@ interface Animal { name: string; group: string; icon: string; dezenas: string; }
   styleUrls: ['./dashboard.css'],
   standalone: false
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy { 
   userProfile?: UserProfile;
   draws: Draw[] = [];
   userBets: any[] = []; 
   isLoading = true;
+  
+  autoRefreshSub?: Subscription; 
 
   activeTab: string = 'jogo';
 
@@ -64,6 +67,15 @@ export class DashboardComponent implements OnInit {
   depositAmount: number = 0;
   pixGenerated: boolean = false;
   pixCode: string = '00020126580014br.gov.bcb.pix0136pix@jogodobicho.com.br0203Pix520400005303986540510.005802BR5909SAO PAULO6009JOGO BIXO6207050300063041D3D';
+  
+  // ==========================================
+  // VARIÁVEIS DO PERFIL
+  // ==========================================
+  editProfileData = {
+    name: '',
+    email: '',
+    password: ''
+  };
 
   get progressoDiario() {
     const realizados = this.sorteiosDoDia.filter(s => s.realizado).length;
@@ -89,13 +101,30 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     const idLogado = localStorage.getItem('userId');
     if (idLogado && idLogado !== 'undefined') {
-      this.getUserData(Number(idLogado));
+      this.getUserData(Number(idLogado)); 
       this.listarSorteios();
       this.carregarApostas(Number(idLogado));
       this.atualizarStatusSorteios(); 
+      
+      this.iniciarAutoRefresh(Number(idLogado)); 
     } else {
       this.router.navigate(['/login']);
     }
+  }
+
+  ngOnDestroy() {
+    if (this.autoRefreshSub) {
+      this.autoRefreshSub.unsubscribe();
+    }
+  }
+
+  iniciarAutoRefresh(userId: number) {
+    this.autoRefreshSub = interval(10000).subscribe(() => {
+      this.getUserData(userId, true); 
+      this.listarSorteios();
+      this.carregarApostas(userId);
+      this.atualizarStatusSorteios();
+    });
   }
 
   atualizarStatusSorteios() {
@@ -120,17 +149,18 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  getUserData(id: number) {
-    this.isLoading = true;
+  getUserData(id: number, silent: boolean = false) {
+    if (!silent) this.isLoading = true; 
+    
     this.userService.getUserById(id).subscribe({
       next: (data) => {
         this.userProfile = data;
-        this.isLoading = false;
+        if (!silent) this.isLoading = false;
         this.cdr.detectChanges(); 
       },
       error: (err) => {
         console.error('Erro ao buscar dados:', err);
-        this.isLoading = false;
+        if (!silent) this.isLoading = false;
         this.cdr.detectChanges();
       }
     });
@@ -168,7 +198,6 @@ export class DashboardComponent implements OnInit {
 
     this.betService.placeBet(this.userProfile.id, betRequest).subscribe({
       next: (res) => {
-        // ALERTA ANIMADO DE SUCESSO
         Swal.fire({
           title: 'Aposta Confirmada!',
           text: 'Sua aposta foi registrada. Boa sorte!',
@@ -176,7 +205,7 @@ export class DashboardComponent implements OnInit {
           confirmButtonColor: '#D95360'
         });
 
-        this.getUserData(this.userProfile!.id); 
+        this.getUserData(this.userProfile!.id, true); 
         this.carregarApostas(this.userProfile!.id); 
         this.selectedAmount = 0;
         this.selectedAnimal = null;
@@ -184,7 +213,6 @@ export class DashboardComponent implements OnInit {
         this.cdr.detectChanges();
       },
       error: (err) => {
-        // ALERTA ANIMADO DE ERRO
         Swal.fire({
           title: 'Ops!',
           text: err.error?.message || 'Erro ao realizar a aposta.',
@@ -211,7 +239,6 @@ export class DashboardComponent implements OnInit {
 
   gerarSorteio() {
     this.drawService.generate().subscribe(() => {
-      // ALERTA PARA O ADMIN
       Swal.fire({
         title: 'Sorteio Realizado!',
         text: 'Os resultados já estão disponíveis no sistema.',
@@ -224,6 +251,9 @@ export class DashboardComponent implements OnInit {
   }
 
   logout() {
+    if (this.autoRefreshSub) {
+      this.autoRefreshSub.unsubscribe(); 
+    }
     localStorage.removeItem('userId'); 
     this.router.navigate(['/login']);  
   }
@@ -244,10 +274,6 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  // ==========================================
-  // FUNÇÕES DO FINANCEIRO (PIX)
-  // ==========================================
-  
   setDepositAmount(amount: number) {
     this.depositAmount = amount;
     this.pixGenerated = false; 
@@ -255,7 +281,6 @@ export class DashboardComponent implements OnInit {
 
   generatePix() {
     if (this.depositAmount < 1) {
-      // ALERTA DE VALOR MÍNIMO
       Swal.fire({
         title: 'Atenção',
         text: 'O valor mínimo de depósito é R$ 1,00.',
@@ -269,7 +294,6 @@ export class DashboardComponent implements OnInit {
 
   copyPix() {
     navigator.clipboard.writeText(this.pixCode).then(() => {
-      // TOAST FLUTUANTE DE SUCESSO (Canto da tela)
       const Toast = Swal.mixin({
         toast: true,
         position: 'top-end',
@@ -315,16 +339,70 @@ export class DashboardComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erro ao fazer depósito:', err);
-        
         Swal.fire({
           title: 'Falha no Pagamento',
           text: 'Não conseguimos conectar com o banco. Tente novamente.',
           icon: 'error',
           confirmButtonColor: '#D95360'
         });
-        
         this.isLoading = false; 
         this.cdr.detectChanges();
+      }
+    });
+  }
+
+  // ==========================================
+  // FUNÇÕES DO PERFIL
+  // ==========================================
+  abrirPerfil() {
+    if (this.userProfile) {
+      this.editProfileData.name = this.userProfile.name;
+      this.editProfileData.email = this.userProfile.email;
+      this.editProfileData.password = ''; // Deixamos a senha em branco por segurança
+      this.activeTab = 'perfil';
+    }
+  }
+
+  saveProfile() {
+    if (!this.userProfile) return;
+    this.isLoading = true;
+    
+    // Mandamos apenas Nome e E-mail por padrão
+    const payload: any = {
+      name: this.editProfileData.name,
+      email: this.editProfileData.email
+    };
+
+    // Só adicionamos a senha no pacote se o usuário de fato digitou alguma coisa
+    if (this.editProfileData.password && this.editProfileData.password.trim() !== '') {
+      payload.password = this.editProfileData.password;
+    }
+
+    this.userService.updateUser(this.userProfile.id, payload).subscribe({
+      next: (res) => {
+        this.isLoading = false;
+        this.userProfile = res;
+        this.editProfileData.password = ''; 
+        this.cdr.detectChanges(); 
+
+        Swal.fire({
+          title: 'Sucesso!',
+          text: 'Seus dados foram atualizados.',
+          icon: 'success',
+          confirmButtonColor: '#D95360'
+        });
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.cdr.detectChanges(); 
+
+        console.error('Erro detalhado:', err);
+        Swal.fire({
+          title: 'Ops!',
+          text: err.error?.message || 'Erro ao atualizar o perfil. Verifique se o e-mail já existe.',
+          icon: 'error',
+          confirmButtonColor: '#D95360'
+        });
       }
     });
   }
