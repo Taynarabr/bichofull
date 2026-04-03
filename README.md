@@ -107,7 +107,7 @@ Para facilitar a avaliação imediata sem necessidade de novos cadastros, utiliz
 | **Administrador** | admin@bichofull.com | 123456 |
 | **Jogador Teste** | user@bichofull.com | user123 | 
 *(Ou crie um novo usuário diretamente no sistema)*
-*O projeto já inclui um dump completo do banco (script_banco.sql). Basta importá-lo para ter acesso imediato aos 25 animais cadastrados e usuários de homologação.*
+*O projeto já inclui um dump completo do banco: [script_banco.sql](./bichofull_backup.sql). Basta importá-lo para ter acesso imediato aos 25 animais cadastrados e usuários de homologação.*
 
 ---
 
