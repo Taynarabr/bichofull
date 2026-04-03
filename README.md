@@ -21,6 +21,12 @@ O selo acima garante que a versão atual do código passou por:
 * **Gestão Financeira:** Saldo fictício inicial de **R$ 1.000,00**, com interface para simulação de depósitos via Pix e saques validados.
 * **Dashboard Real-Time:** Atualização automática de sorteios e saldo via Polling (sem necessidade de F5).
 
+### ⚙️ Área do Administrador (Admin)
+* **Motor de Sorteio:** Interface para geração de resultados oficiais (1º ao 5º prêmio).
+* **Auditoria de Resultados:** Listagem completa de todos os sorteios realizados no sistema.
+
+---
+
 ## 📸 Telas do Sistema
 
 ### 1. Acesso e Login
@@ -67,24 +73,28 @@ O selo acima garante que a versão atual do código passou por:
 
 <br>
 
-### 5. Rodapé
+### 5. Área do Administrador (Admin)
+<div align="center">
+  <img src="./assets/admin.png" width="600" alt="Painel do Administrador">
+  <p><i>Painel de Controle exclusivo para geração de novos sorteios e auditoria.</i></p>
+</div>
+
+<br>
+
+### 6. Rodapé
 <div align="center">
   <img src="./assets/rodape.png" width="600" alt="Rodapé e Encerramento de Sessão">
   <p><i>Links de Navegação, Suporte e Opção de Logout.</i></p>
-</div> 
-
-### ⚙️ Área do Administrador (Admin)
-* **Motor de Sorteio:** Interface para geração de resultados oficiais (1º ao 5º prêmio).
-* **Auditoria de Resultados:** Listagem completa de todos os sorteios realizados no sistema.
+</div>
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
-**Frontend:** Angular 17+, TypeScript, Bootstrap 5, RxJS, SweetAlert2 e Vitest.
-**Backend:** Java 21, Spring Boot 3, Spring Security, Spring Data JPA e Hibernate.
-**Banco de Dados:** MySQL / MariaDB.
-**Infraestrutura:** GitHub Actions para CI/CD e GitHub Projects (Kanban).
+* **Frontend:** Angular 17+, TypeScript, Bootstrap 5, RxJS, SweetAlert2 e Vitest.
+* **Backend:** Java 21, Spring Boot 3, Spring Security, Spring Data JPA e Hibernate.
+* **Banco de Dados:** MySQL / MariaDB.
+* **Infraestrutura:** GitHub Actions para CI/CD e GitHub Projects (Kanban).
 
 ---
 
@@ -95,7 +105,8 @@ Para facilitar a avaliação imediata sem necessidade de novos cadastros, utiliz
 | Perfil | E-mail | Senha |
 | :--- | :--- | :--- |
 | **Administrador** | admin@bichofull.com | 123456 |
-| **Jogador Teste** | user@bichofull.com | user123 | OU CRIE UM NOVO USUÁRIO
+| **Jogador Teste** | user@bichofull.com | user123 | 
+*(Ou crie um novo usuário diretamente no sistema)*
 
 ---
 
@@ -106,7 +117,6 @@ Para facilitar a avaliação imediata sem necessidade de novos cadastros, utiliz
 * **Node.js** (v20+) e **NPM** instalados.
 * **Maven** instalado.
 * **MySQL** rodando na porta 3306.
-
 
 ### 1. Preparação do Banco de Dados
 No seu terminal MySQL, crie o esquema necessário:
