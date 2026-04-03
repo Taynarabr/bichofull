@@ -21,6 +21,58 @@ O selo acima garante que a versão atual do código passou por:
 * **Gestão Financeira:** Saldo fictício inicial de **R$ 1.000,00**, com interface para simulação de depósitos via Pix e saques validados.
 * **Dashboard Real-Time:** Atualização automática de sorteios e saldo via Polling (sem necessidade de F5).
 
+## 📸 Telas do Sistema
+
+### 1. Acesso e Login
+<div align="center">
+  <img src="./assets/home.png" width="600" alt="Tela de Login Principal">
+  <p><i>Ponto de partida: Login, Cadastro e Boas-vindas.</i></p>
+</div>
+
+| Pop-up: Recuperar Senha | Pop-up: Conexão Social |
+| :---: | :---: |
+| <img src="./assets/redefinir-senha.png" width="280"> | <img src="./assets/opcao-entrar.png" width="280"> |
+| *Fluxo para redefinição de senha segura.* | *Alternativa rápida para conexão.* |
+
+<br>
+
+### 2. O Dashboard do Jogador
+<div align="center">
+  <img src="./assets/dashboard.png" width="600" alt="Painel Principal do Jogador">
+  <p><i>O coração do jogo: Painel do Jogador, Estatísticas e Sorteios Atuais.</i></p>
+</div>
+
+<div align="center">
+  <img src="./assets/notificacoes.png" width="300" alt="Pop-up de Notificações">
+  <p><i>Alertas de novos resultados do sistema em tempo real.</i></p>
+</div>
+
+<br>
+
+### 3. Gerenciamento Financeiro
+<div align="center">
+  <img src="./assets/deposito.png" width="280" alt="Adicionar Saldo (Depósito)">
+  <img src="./assets/sacar.png" width="280" alt="Sacar Fundos (Saque)">
+  <p><i>Adicionar Saldo (Depósito por Pix) vs. Sacar Fundos (Saque via Pix).</i></p>
+</div>
+
+<br>
+
+### 4. Gestão e Resultados
+<div align="center">
+  <img src="./assets/perfil.png" width="280" alt="Configurações de Perfil">
+  <img src="./assets/resultados.png" width="280" alt="Histórico de Resultados">
+  <p><i>Configurações de Perfil do usuário vs. Histórico de Resultados Oficiais.</i></p>
+</div>
+
+<br>
+
+### 5. Rodapé
+<div align="center">
+  <img src="./assets/rodape.png" width="600" alt="Rodapé e Encerramento de Sessão">
+  <p><i>Links de Navegação, Suporte e Opção de Logout.</i></p>
+</div> 
+
 ### ⚙️ Área do Administrador (Admin)
 * **Motor de Sorteio:** Interface para geração de resultados oficiais (1º ao 5º prêmio).
 * **Auditoria de Resultados:** Listagem completa de todos os sorteios realizados no sistema.
@@ -54,6 +106,7 @@ Para facilitar a avaliação imediata sem necessidade de novos cadastros, utiliz
 * **Node.js** (v20+) e **NPM** instalados.
 * **Maven** instalado.
 * **MySQL** rodando na porta 3306.
+
 
 ### 1. Preparação do Banco de Dados
 No seu terminal MySQL, crie o esquema necessário:
