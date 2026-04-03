@@ -131,33 +131,33 @@ Acesse o arquivo backend/src/main/resources/application.properties e configure s
 No terminal, execute:
 
 cd backend
-mvn clean install
-.\mvnw spring-boot:run 
+* mvn clean install
+* .\mvnw spring-boot:run 
 
-API: http://localhost:8080
-Swagger: http://localhost:8080/swagger-ui/index.html
+* API: http://localhost:8080
+* Swagger: http://localhost:8080/swagger-ui/index.html
 
 ### 3. Execução do Frontend (Angular)
-Em um novo terminal, execute:
+* Em um novo terminal, execute:
 
-cd frontend
-npm install
-npm start
-URL: Acesse http://localhost:4200
+* cd frontend
+* npm install
+* npm start
+* URL: Acesse http://localhost:4200
 
 ### 📌 Gestão do Projeto
 O desenvolvimento foi orquestrado via GitHub Projects seguindo o fluxo Kanban:
 
-Backlog: Novas ideias e requisitos.
+* Backlog: Novas ideias e requisitos.
 
-To Do: Tarefas priorizadas para a sprint.
+* To Do: Tarefas priorizadas para a sprint.
 
-In Progress: Atividades em execução.
+* In Progress: Atividades em execução.
 
-Review/QA: Validação de código e testes de integração.
+* Review/QA: Validação de código e testes de integração.
 
-Done: Funcionalidades integradas com sucesso e validadas pelo CI.
+* Done: Funcionalidades integradas com sucesso e validadas pelo CI.
 
-##Desenvolvido por: Taynara Batista Ribeiro
+### Desenvolvido por: Taynara Batista Ribeiro
 Engenharia de Software - 6º Período
 ```sql
